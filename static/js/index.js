@@ -10,6 +10,7 @@ let init = (app) => {
     // This is the Vue data.
     app.data = {
         // Complete as you see fit.
+        ingredientInput: "", // Holds the data from the pantry input
     };
 
     app.enumerate = (a) => {
@@ -23,6 +24,13 @@ let init = (app) => {
     // This contains all the methods.
     app.methods = {
         // Complete as you see fit.
+
+        // BROKEN: Here this does not work. Any ideas why? Help me out
+        clearIngredientInput() {
+            // Clear the search query
+            this.ingredientInput = "";
+            console.log("Ingredient Input Box Cleared!");
+        },
     };
 
     // This creates the Vue instance.
@@ -44,4 +52,5 @@ let init = (app) => {
 
 // This takes the (empty) app object, and initializes it,
 // putting all the code i
+console.log("Initting vue app! JavaScript is fo sho being loaded");
 init(app);
