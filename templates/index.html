@@ -17,14 +17,35 @@
   <!-- </div> -->
   <div class="field pb-4">
     <p class="control has-icons-right pb-4">
-      <input class="input" type="text" placeholder="Enter pentry ingredient" v-model="ingredientInput">
-      <span class="icon is-small is-right clickable" @click="clearIngredientInput">
-        <i class="fa fa-times-circle"></i>
+      <input class="input" type="text" placeholder="Enter pantry ingredient" v-model="ingredientInput">
+      <span class="icon is-small is-right is-clickable" @click="clearIngredientInput">
+        <i class="fa fa-times-circle" ></i>
       </span>
     </p>
-    <button class="button is-primary">Add Single Pantry Ingredient</button>
+    <button class="button is-primary" @click="addItemToPantry">Add Single Pantry Ingredient</button>
   </div>
 
+  <div class="columns">
+    <div class="column is-one-quarter">
+    </div>
+    <div class="column is-half">
+      <div class="title">Your Pantry:</div>
+      <table class="table is-bordered is-hoverable is-fullwidth">
+        <tbody>
+          <tr v-for="item in pantry">
+            <td>
+              <span class="level">
+                <span class="level-left">{{item.item}}</span>
+                <span class="icon level-right is-small is-clickable" @click="deleteItem(item.id)">
+                  <i class="fa fa-trash"></i>
+                </span>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
   <!-- Main columns div -->
   <div class="columns">
@@ -69,7 +90,9 @@
 [[block page_scripts]]
 <!-- Loads the index-specific js for Vue -->
 <script>
-  let my_callback_url = "[[=XML(my_callback_url)]]";
+  let getPantry_url = "[[=XML(getPantry_url)]]";
+  let addItemToPantry_url = "[[=XML(addItemToPantry_url)]]";
+  let deleteItem_url = "[[=XML(deleteItem_url)]]";
 </script>
 <script src="js/index.js"></script>
 [[end]]

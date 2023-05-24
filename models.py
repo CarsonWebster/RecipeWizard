@@ -20,4 +20,10 @@ def get_time():
 #
 ## always commit your models to avoid problems later
 
+db.define_table('pantry',
+    Field('userID', 'reference auth_user'),
+    Field('item', requires=IS_NOT_EMPTY()),
+    # Field('quantity', 'float', requires=IS_FLOAT_IN_RANGE(0, 1e6)),
+)
+
 db.commit()

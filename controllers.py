@@ -34,9 +34,37 @@ from .models import get_user_email
 url_signer = URLSigner(session)
 
 @action('index')
-@action.uses('index.html', db, auth, url_signer)
+@action.uses('index.html', db, auth.user, url_signer)
 def index():
     return dict(
         # COMPLETE: return here any signed URLs you need.
-        my_callback_url = URL('my_callback', signer=url_signer),
+        getPantry_url = URL('getPantry', signer=url_signer),
+        addItemToPantry_url = URL('addItemToPantry', signer=url_signer),
+        deleteItem_url = URL('deleteItem', signer=url_signer),
     )
+
+@action('getPantry', method="GET")
+@action.uses(db, auth.user, url_signer)
+def getPantry():
+    userID = auth.current_user.get("id")
+    pantry = db(db.pantry.userID == userID).select().as_list()
+    return dict(pantry=pantry)
+
+@action('addItemToPantry', method="POST")
+@action.uses(db, auth.user, url_signer)
+def addItemToPantry():
+    userID = auth.current_user.get("id")
+    item = request.json.get("item")
+    db.pantry.insert(
+        userID = userID,
+        item = item,
+    )
+    return dict()
+
+# probably need to add security to this
+@action('deleteItem', method="POST")
+@action.uses(db, auth.user, url_signer)
+def deleteItem():
+    itemID = request.json.get("itemID")
+    db(db.pantry.id == itemID).delete()
+    return dict()
