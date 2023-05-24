@@ -46,6 +46,7 @@ def index():
         getPantry_url=URL('getPantry', signer=url_signer),
         addItemToPantry_url=URL('addItemToPantry', signer=url_signer),
         deleteItem_url=URL('deleteItem', signer=url_signer),
+        testCompletion_url=URL('testCompletion'),
     )
 
 
@@ -86,6 +87,7 @@ def deleteItem():
 @action.uses()
 def testCompletion():
     print("Calling a test completion!")
+    print("Here are the secrets" + str(secrets))
     openai.api_key = secrets["OPENAI_KEY"]
     response = openai.Completion.create(
         model="text-davinci-003",
