@@ -84,6 +84,11 @@ let init = (app) => {
         console.log("Ingredient Input Box Cleared!");
     }
 
+    app.testCompletion = function() {
+        console.log("Testing completion")
+        axios.get(testCompletion_url).then(console.log("Request completed"))
+    }
+
     // This contains all the methods.
     app.methods = {
         // Complete as you see fit.
@@ -91,6 +96,7 @@ let init = (app) => {
         addItemToPantry: app.addItemToPantry,
         clearIngredientInput: app.clearIngredientInput,
         deleteItem: app.deleteItem,
+        testCompletion: app.testCompletion,
     };
 
     // This creates the Vue instance.
