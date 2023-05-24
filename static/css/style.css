@@ -22,7 +22,6 @@ table.scrollable {
 	font-size: 30px;
 	/* text-align: center; */
 	margin: 6px;
-	/* margin-top: 10px; */
 }
 
 .pantryContainer {
@@ -49,7 +48,7 @@ table.scrollable {
 	/* margin-top: 0px; */
 	border-radius: 16px;
 	position: relative;
-	left: 5px;
+	left: 4.5px;
 	bottom: 2px;
 }
 
