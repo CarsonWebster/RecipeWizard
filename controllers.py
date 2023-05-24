@@ -33,7 +33,7 @@ from .models import get_user_email
 
 import openai
 from dotenv import dotenv_values
-secrets = dotenv_values(".env")
+secrets = dotenv_values("apps/RecipeWizard/.env")
 
 url_signer = URLSigner(session)
 
@@ -97,3 +97,4 @@ def testCompletion():
     )
     print(response)
     print(response.choices[0].text)
+    return(response.choices[0].text)
