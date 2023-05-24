@@ -27,9 +27,12 @@
             <!-- <div class="titleText">Your Pantry:</div> -->
             <div class="pantryTextBoxAndButton">
               <div class="pantryTextBoxContainer">
-                <div class="control has-icons-right"></p>
-                  <input class="pantryTextBox" type="text" placeholder="Enter pantry ingredient" v-model="ingredientInput" v-on:keyup.enter="addItemToPantry">
-                  <span v-show="ingredientInput.length != 0" class="icon is-right is-clickable f-21" @click="clearIngredientInput">
+                <div class="control has-icons-right">
+                  </p>
+                  <input class="pantryTextBox" type="text" placeholder="Enter pantry ingredient"
+                    v-model="ingredientInput" v-on:keyup.enter="addItemToPantry">
+                  <span v-show="ingredientInput.length != 0" class="icon is-right is-clickable f-21"
+                    @click="clearIngredientInput">
                     <i class="fa fa-times-circle"></i>
                   </span>
                 </div>
@@ -46,7 +49,7 @@
                 <td class="emptyPantry">
                   <span class="level">
                     <span class="level-left ml-1">Pantry is empty...</span>
-                    </span>
+                  </span>
                   </span>
                 </td>
               </tr>
@@ -131,6 +134,7 @@
 
     <!-- columns end div -->
   </div>
+  <button class="button is-warning" @click="testCompletion">Test AI Completion python function</button>
 
   <!-- section end div -->
 </div>
@@ -142,6 +146,7 @@
   let getPantry_url = "[[=XML(getPantry_url)]]";
   let addItemToPantry_url = "[[=XML(addItemToPantry_url)]]";
   let deleteItem_url = "[[=XML(deleteItem_url)]]";
+  let testCompletion_url = "[[=XML(testCompletion_url)]]";
 </script>
 <script src="js/index.js"></script>
 [[end]]
