@@ -31,6 +31,10 @@ from .common import db, session, T, cache, auth, logger, authenticated, unauthen
 from py4web.utils.url_signer import URLSigner
 from .models import get_user_email
 
+import openai
+from dotenv import dotenv_values
+secrets = dotenv_values(".env")
+
 url_signer = URLSigner(session)
 
 @action('index')
@@ -71,3 +75,17 @@ def deleteItem():
     itemID = request.json.get("itemID")
     db(db.pantry.id == itemID).delete()
     return dict()
+
+@action('testCompletion', method="GET")
+@action.uses()
+def testCompletion():
+    print("Calling a test completion!")
+    openai.api_key = secrets["OPENAI_KEY"]
+    let response = openai.Completion.create(
+            model="text-davinci-003",
+            prompt="Say the test has been completed sucessfully in shakespearean",
+            max_tokens=15,
+            temperature=0.3,
+            )
+    print(response)
+    print(response.choices[0].text)
