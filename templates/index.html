@@ -15,20 +15,60 @@
   <!--   <input class="input is-info" type="text" placeholder="Enter pantry ingredient"> -->
   <!--   <button class="button is-primary">Add Single Pantry Ingredient</button> -->
   <!-- </div> -->
-  <div class="field pb-4">
-    <p class="control has-icons-right pb-4">
-      <input class="input" type="text" placeholder="Enter pentry ingredient" v-model="ingredientInput">
-      <span class="icon is-small is-right clickable" @click="clearIngredientInput">
-        <i class="fa fa-times-circle"></i>
-      </span>
-    </p>
-    <button class="button is-primary">Add Single Pantry Ingredient</button>
-  </div>
 
+  <div class="columns">
+    <div class="column is-one-quarter">
+    </div>
+    <div class="column is-half">
+      <div class="pantryContainer">
+        <div class="titleText">Your Pantry:</div>
+        <div class="pantryBox">
+          <div class="pantryHead">
+            <!-- <div class="titleText">Your Pantry:</div> -->
+            <div class="pantryTextBoxAndButton">
+              <div class="pantryTextBoxContainer">
+                <div class="control has-icons-right"></p>
+                  <input class="pantryTextBox" type="text" placeholder="Enter pantry ingredient" v-model="ingredientInput" v-on:keyup.enter="addItemToPantry">
+                  <span v-show="ingredientInput.length != 0" class="icon is-right is-clickable f-21" @click="clearIngredientInput">
+                    <i class="fa fa-times-circle"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="is-clickable addButton" @click="addItemToPantry">
+                <i class="fa fa-plus"></i>
+              </div>
+            </div>
+          </div>
+
+          <table class="table scrollable rounded-bottom">
+            <tbody>
+              <tr v-if="pantry.length == 0">
+                <td class="emptyPantry">
+                  <span class="level">
+                    <span class="level-left ml-1">Pantry is empty...</span>
+                    </span>
+                  </span>
+                </td>
+              </tr>
+              <tr v-for="item in pantry.slice().reverse()">
+                <td class="pantryItem">
+                  <span class="level">
+                    <span class="level-left ml-1">{{item.item}}</span>
+                    <span class="icon level-right is-small is-clickable mr-2 icon-color" @click="deleteItem(item.id)">
+                      <i class="fa fa-trash"></i>
+                    </span>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Main columns div -->
   <div class="columns">
-
     <div class="column is-one-third">
       <div class="card">
         <div class="card-content">
@@ -69,7 +109,9 @@
 [[block page_scripts]]
 <!-- Loads the index-specific js for Vue -->
 <script>
-  let my_callback_url = "[[=XML(my_callback_url)]]";
+  let getPantry_url = "[[=XML(getPantry_url)]]";
+  let addItemToPantry_url = "[[=XML(addItemToPantry_url)]]";
+  let deleteItem_url = "[[=XML(deleteItem_url)]]";
 </script>
 <script src="js/index.js"></script>
 [[end]]
