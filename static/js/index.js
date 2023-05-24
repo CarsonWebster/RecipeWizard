@@ -110,7 +110,9 @@ let init = (app) => {
         
     app.testCompletion = function() {
         console.log("Testing completion")
-        axios.get(testCompletion_url).then(console.log("Request completed"))
+        axios.get(testCompletion_url).then((data) => {
+            console.log(data)
+        })
     }
 
     // This contains all the methods.
