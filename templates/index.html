@@ -68,6 +68,17 @@
   </div>
 
   <!-- Main columns div -->
+  <div v-for="recipe in recipes" class="columns">
+    <div class="column is-one-third">
+      <div class="card">
+        <div class="card-content">
+          <div class="content">
+            {{recipe.content}}
+          </div>
+        </div>
+      </div>
+    </div>
+
   <div class="columns">
     <div class="column is-one-third">
       <div class="card">
