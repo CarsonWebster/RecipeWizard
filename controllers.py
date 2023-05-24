@@ -37,15 +37,17 @@ secrets = dotenv_values(".env")
 
 url_signer = URLSigner(session)
 
+
 @action('index')
 @action.uses('index.html', db, auth.user, url_signer)
 def index():
     return dict(
         # COMPLETE: return here any signed URLs you need.
-        getPantry_url = URL('getPantry', signer=url_signer),
-        addItemToPantry_url = URL('addItemToPantry', signer=url_signer),
-        deleteItem_url = URL('deleteItem', signer=url_signer),
+        getPantry_url=URL('getPantry', signer=url_signer),
+        addItemToPantry_url=URL('addItemToPantry', signer=url_signer),
+        deleteItem_url=URL('deleteItem', signer=url_signer),
     )
+
 
 @action('getPantry', method="GET")
 @action.uses(db, auth.user, url_signer)
@@ -53,6 +55,7 @@ def getPantry():
     userID = auth.current_user.get("id")
     pantry = db(db.pantry.userID == userID).select().as_list()
     return dict(pantry=pantry)
+
 
 @action('addItemToPantry', method="POST")
 @action.uses(db, auth.user, url_signer)
@@ -62,13 +65,15 @@ def addItemToPantry():
     if db(db.pantry.item == item).select().first():
         return dict(success=False)
     db.pantry.insert(
-        userID = userID,
-        item = item,
+        userID=userID,
+        item=item,
     )
     newItem = db(db.pantry.item == item).select().first()
-    return dict(success=True, newItem = newItem)
+    return dict(success=True, newItem=newItem)
 
 # probably need to add security to this
+
+
 @action('deleteItem', method="POST")
 @action.uses(db, auth.user, url_signer)
 def deleteItem():
@@ -76,16 +81,17 @@ def deleteItem():
     db(db.pantry.id == itemID).delete()
     return dict()
 
+
 @action('testCompletion', method="GET")
 @action.uses()
 def testCompletion():
     print("Calling a test completion!")
     openai.api_key = secrets["OPENAI_KEY"]
-    let response = openai.Completion.create(
-            model="text-davinci-003",
-            prompt="Say the test has been completed sucessfully in shakespearean",
-            max_tokens=15,
-            temperature=0.3,
-            )
+    response = openai.Completion.create(
+        model="text-davinci-003",
+        prompt="Say the test has been completed sucessfully in shakespearean",
+        max_tokens=15,
+        temperature=0.3,
+    )
     print(response)
     print(response.choices[0].text)
