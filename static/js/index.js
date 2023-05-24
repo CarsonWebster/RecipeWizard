@@ -105,7 +105,12 @@ let init = (app) => {
     }
     
     app.genRecipe = function() {
+
+    }
         
+    app.testCompletion = function() {
+        console.log("Testing completion")
+        axios.get(testCompletion_url).then(console.log("Request completed"))
     }
 
     // This contains all the methods.
@@ -118,6 +123,7 @@ let init = (app) => {
         getRecipes: app.getRecipes,
         addRecipe: app.addRecipe,
         genRecipe: app.genRecipe,
+        testCompletion: app.testCompletion,
     };
 
     // This creates the Vue instance.
