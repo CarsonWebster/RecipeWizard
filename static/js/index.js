@@ -12,7 +12,6 @@ let init = (app) => {
         // Complete as you see fit.
         ingredientInput: "",    // Holds the data from the pantry input
         pantry: [],             // Holds all items in logged in users pantry
-        test: "TEXT",
     }; 
 
     app.enumerate = (a) => {
@@ -31,8 +30,18 @@ let init = (app) => {
 
     app.addItemToPantry = function() {
         // adds item from ingredientInput box to database with userID
-        item = this.ingredientInput.toLowerCase();
-        item = item.charAt(0).toUpperCase() + item.slice(1);
+        if(this.pantry.length > 100) {  // add alert/pop up to tell user here
+            console.log("You have too many items in your pantry. Please remove some before adding more");
+            return;
+        }
+        item = this.ingredientInput;
+        if(item.length == 0) {
+            return;
+        } else if(item.length > 50) {
+            console.log("Entry too long");
+            return;
+        }
+        item = item.charAt(0).toUpperCase() + item.slice(1).toLowerCase();
         fetch(addItemToPantry_url, {
             method: "POST",
             headers: {
@@ -42,9 +51,14 @@ let init = (app) => {
                 item: item,
             }),
         }).then((response) => response.json()).then((data) => {
-            console.log("Item added!");
-            this.ingredientInput = "";
-            app.getPantry();    // could also just append item to pantry for more efficiency but less consistency 
+            if(data.success == true) {
+                console.log("Item added!");
+                this.ingredientInput = "";
+                // app.getPantry();
+                app.vue.pantry.push(data.newItem);
+            } else {
+                console.log("Item already in pantry");
+            }
         });
     }
 
