@@ -68,13 +68,16 @@
   </div>
 
   <!-- Main columns div -->
+  <button class="button is-link" @click="addRecipe">Generate New Recipe!</button>
   <div v-for="recipe in recipes" class="columns">
     <div class="column is-one-third">
       <div class="card">
         <div class="card-content">
+          <button class="button is-link" @click="genRecipe(recipe._idx)">Regenerate Recipe!</button>
           <div class="content">
             {{recipe.content}}
           </div>
+
         </div>
       </div>
     </div>

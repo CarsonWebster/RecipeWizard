@@ -12,6 +12,7 @@ let init = (app) => {
         // Complete as you see fit.
         ingredientInput: "",    // Holds the data from the pantry input
         pantry: [],             // Holds all items in logged in users pantry
+        recipes: [],
     }; 
 
     app.enumerate = (a) => {
@@ -84,6 +85,14 @@ let init = (app) => {
         console.log("Ingredient Input Box Cleared!");
     }
 
+    app.addRecipe = function() {
+
+    }
+
+    app.genRecipe = function() {
+        
+    }
+
     // This contains all the methods.
     app.methods = {
         // Complete as you see fit.
@@ -91,6 +100,8 @@ let init = (app) => {
         addItemToPantry: app.addItemToPantry,
         clearIngredientInput: app.clearIngredientInput,
         deleteItem: app.deleteItem,
+        addRecipe: app.addRecipe,
+        genRecipe: app.genRecipe,
     };
 
     // This creates the Vue instance.
