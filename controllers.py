@@ -63,12 +63,13 @@ def getPantry():
 def addItemToPantry():
     userID = auth.current_user.get("id")
     item = request.json.get("item")
-    if db(db.pantry.item == item).select().first():
+    if db((db.pantry.userID == userID) & (db.pantry.item == item)).select().first():
         return dict(success=False)
     db.pantry.insert(
         userID=userID,
         item=item,
     )
+
     newItem = db(db.pantry.item == item).select().first()
     return dict(success=True, newItem=newItem)
 
@@ -94,6 +95,7 @@ defaultPrompt = """
         to cater to different meal preferences.
         
         4. Optionally, consider recipes that are quick and easy to prepare, 
+        
         perfect for busy individuals or those with limited cooking time.
         
         5. Optionally, provide recipes with a balanced nutritional profile, considering macronutrients and minimizing sugar content.
@@ -107,6 +109,7 @@ defaultPrompt = """
         Ingredients: [List the ingredients]
         Dietary Preferences: [Specify the user's dietary preferences]
         Number of People: [Specify the number of people the user is cooking for]
+
         Please generate a single recipe based on the provided information.
         
         user input : 
