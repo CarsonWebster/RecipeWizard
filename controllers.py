@@ -46,7 +46,7 @@ def index():
         getPantry_url=URL('getPantry', signer=url_signer),
         addItemToPantry_url=URL('addItemToPantry', signer=url_signer),
         deleteItem_url=URL('deleteItem', signer=url_signer),
-        testCompletion_url=URL('testCompletion'),
+        generateRecipeSuggestion=URL('generateRecipeSuggestion'),
     )
 
 
@@ -112,11 +112,11 @@ defaultPrompt = """
         user input : 
 """
 
-@action('generateRecipeSuggestions', method="GET")
+@action('generateRecipeSuggestion', method="GET")
 @action.uses(db, auth.user)
-def generateRecipeSuggestions():
+def generateRecipeSuggestion():
     print("Calling a recipe suggestion generation!")
-    print("Here are the secrets" + str(secrets))
+    # print("Here are the secrets" + str(secrets))
     openai.api_key = secrets["OPENAI_KEY"]
 
     userID = auth.current_user.get("id")
