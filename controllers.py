@@ -63,12 +63,13 @@ def getPantry():
 def addItemToPantry():
     userID = auth.current_user.get("id")
     item = request.json.get("item")
-    if db(db.pantry.item == item).select().first():
+    if db((db.pantry.userID == userID) & (db.pantry.item == item)).select().first():
         return dict(success=False)
     db.pantry.insert(
         userID=userID,
         item=item,
     )
+
     newItem = db(db.pantry.item == item).select().first()
     return dict(success=True, newItem=newItem)
 
