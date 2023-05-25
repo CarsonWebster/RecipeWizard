@@ -90,6 +90,7 @@ let init = (app) => {
         new_row._idx = app.vue.recipes.length;
         // Push the recipe content to the row
         new_row.content = "New Recipe";
+        new_row.show = false;
         
         app.vue.recipes.push(new_row);
     }
@@ -109,6 +110,9 @@ let init = (app) => {
     app.genRecipe = function() {
 
     }
+    app.toggleRecipe = function(row_idx) {
+        app.vue.recipes[row_idx].show = !app.vue.recipes[row_idx].show
+    }
         
     app.testCompletion = function() {
         console.log("Testing completion")
@@ -127,6 +131,7 @@ let init = (app) => {
         getRecipes: app.getRecipes,
         addRecipe: app.addRecipe,
         genRecipe: app.genRecipe,
+        toggleRecipe: app.toggleRecipe,
         testCompletion: app.testCompletion,
     };
 
