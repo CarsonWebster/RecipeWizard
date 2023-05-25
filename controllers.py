@@ -82,7 +82,6 @@ def deleteItem():
     db(db.pantry.id == itemID).delete()
     return dict()
 
-
 defaultPrompt = """
         Title: Recipe Wizard - Creating Delicious Meals from Your Pantry
 
@@ -124,14 +123,21 @@ defaultPrompt = """
 """
 
 @action('testCompletion', method="GET")
-@action.uses()
+@action.uses(db, auth.user)
 def testCompletion():
     print("Calling a test completion!")
     print("Here are the secrets" + str(secrets))
     openai.api_key = secrets["OPENAI_KEY"]
+
+
+    userID = auth.current_user.get("id")
+    ingredients = db(db.pantry.userID == userID).select().as_list()
+    dietaryPreferences = ["vegetarian"] # TODO in future want to pull from URL
+    numberOfPeople = 3                  # TODO in future want to pull from URL
+    
     response = openai.Completion.create(
         model="text-davinci-003",
-        prompt="Say the test has been completed sucessfully in shakespearean",
+        prompt= f"{defaultPrompt} {str(ingredients)}, {str(dietaryPreferences)}, {numberOfPeople}",
         max_tokens=15,
         temperature=0.3,
     )
