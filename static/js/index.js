@@ -99,6 +99,8 @@ let init = (app) => {
         // let rows = [{}, {}, {}];
         // app.enumerate(rows);
         // app.vue.recipes = rows;
+
+        // TODO: this will be replaced with an api call
         for(let i = 0; i < 3; i++) {
             app.addRecipe();
         }
