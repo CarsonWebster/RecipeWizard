@@ -83,6 +83,46 @@ def deleteItem():
     return dict()
 
 
+defaultPrompt = """
+        Title: Recipe Wizard - Creating Delicious Meals from Your Pantry
+
+        Description:
+        I am developing Recipe Wizard, an innovative app that helps users make the most of the ingredients they have in their pantry. 
+        By providing a list of ingredients, the system will suggest recipes tailored to their preferences. 
+        It will consider dietary restrictions, serving size, and provide detailed nutritional information for each recipe.
+        
+        Instructions:
+        Given a list of ingredients and user preferences, generate recipe suggestions that meet the following criteria:
+        
+        1. Utilize as many of the provided ingredients as possible to reduce food waste and maximize resourcefulness.
+        
+        2. Take into account dietary preferences (e.g., vegetarian, vegan, gluten-free) 
+        and exclude recipes that contain restricted ingredients.
+        
+        3. Offer a variety of recipe options, including breakfast, lunch, dinner, snacks, and desserts, 
+        to cater to different meal preferences.4. Optionally, consider recipes that are quick and easy to prepare, 
+        perfect for busy individuals or those with limited cooking time.
+        
+        5. Optionally, provide recipes with a balanced nutritional profile, considering macronutrients and minimizing sugar content.
+        
+        Please tap into your culinary expertise and creativity to generate diverse, delicious, and practical recipe suggestions. 
+        Assume the provided ingredients are available in sufficient quantities. 
+        If necessary, you can make reasonable assumptions about ingredient preparation techniques 
+        (e.g., chopping, cooking methods).
+        
+        Examples:
+        Ingredients: [List the ingredients]
+        Dietary Preferences: [Specify the user's dietary preferences]
+        Number of People: [Specify the number of people the user is cooking for]
+        Please generate at least [Specify the number of recipe suggestions] recipe ideas based on the provided information.
+        
+        Closing:
+        Thank you for being a vital part of Recipe Wizard, helping users unlock the potential of their pantry ingredients 
+        to create mouthwatering meals. Your invaluable contributions are deeply appreciated!
+        
+        user input : 
+"""
+
 @action('testCompletion', method="GET")
 @action.uses()
 def testCompletion():
