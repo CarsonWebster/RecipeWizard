@@ -13,6 +13,7 @@ let init = (app) => {
         ingredientInput: "",    // Holds the data from the pantry input
         pantry: [],             // Holds all items in logged in users pantry
         recipes: [],
+        generated_recipes: []
     }; 
 
     app.enumerate = (a) => {
@@ -97,6 +98,7 @@ let init = (app) => {
         new_row._idx = app.vue.recipes.length;
         // Push the recipe content to the row
         new_row.content = "New Recipe";
+        new_row.show = false;
         
         app.vue.recipes.push(new_row);
     }
@@ -106,13 +108,22 @@ let init = (app) => {
         // let rows = [{}, {}, {}];
         // app.enumerate(rows);
         // app.vue.recipes = rows;
+
+        // TODO: this will be replaced with an api call
         for(let i = 0; i < 3; i++) {
             app.addRecipe();
         }
     }
     
-    app.genRecipe = function() {
-
+    app.genRecipe = function(idx) {
+        console.log("genning recipe:")
+        axios.get(generateRecipeSuggestion_url).then((response) => {
+            console.log(response)
+            app.vue.recipes[idx].content = response.data
+        })
+    }
+    app.toggleRecipe = function(row_idx) {
+        app.vue.recipes[row_idx].show = !app.vue.recipes[row_idx].show
     }
         
     app.testCompletion = function() {
@@ -133,6 +144,7 @@ let init = (app) => {
         getRecipes: app.getRecipes,
         addRecipe: app.addRecipe,
         genRecipe: app.genRecipe,
+        toggleRecipe: app.toggleRecipe,
     };
 
     // This creates the Vue instance.

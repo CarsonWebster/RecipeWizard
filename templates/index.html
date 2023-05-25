@@ -71,22 +71,26 @@
   </div>
 
   <!-- Main columns div -->
-  <button class="button is-link" @click="addRecipe">Generate New Recipe!</button>
+  <div class="block">
+    <button class="button is-link" @click="addRecipe">Generate New Recipe!</button>
+  </div>
 
-  <!-- <div class="control tile is-ancestor">
-    
-    <div v-for="recipe in recipes" class="tile is-one-third">
-      <div  class="card">
-        <div class="card-content">
-          <button class="button is-link" @click="genRecipe(recipe._idx)">Regenerate Recipe!</button>
-          <div class="content">
-            {{recipe.content}}
-          </div>
-        </div>
+  <article v-for="recipe in recipes" class="message is-dark control">
+    <div class="message-header">
+      <p>Recipe # {{recipe._idx}}</p>
+      <button class="button is-link is-rounded is-small is-responsive" @click="toggleRecipe(recipe._idx)">show/hide</button>
+      <!-- <button class="delete" aria-label="delete"></button> -->
+    </div>
+    <!-- TODO: Add loading sign to "Regen Recipe" while recipe is currently being generated -->
+    <div v-if="recipe.show" class="message-body"> 
+      <button class="button is-link" @click="genRecipe(recipe._idx)">Regenerate Recipe!</button>
+      <div class="content" style="white-space: pre-line;">
+        {{recipe.content}}
       </div>
     </div>
-  </div> -->
-  <div class="control columns">
+  </article>
+  
+  <!-- <div class="control columns">
     <div v-for="recipe in recipes" class="column is-one-third">
       <div  class="card">
         <div class="card-content">
@@ -97,7 +101,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
   
 
 
