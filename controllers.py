@@ -46,7 +46,7 @@ def index():
         getPantry_url=URL('getPantry', signer=url_signer),
         addItemToPantry_url=URL('addItemToPantry', signer=url_signer),
         deleteItem_url=URL('deleteItem', signer=url_signer),
-        generateRecipeSuggestion=URL('generateRecipeSuggestion'),
+        generateRecipeSuggestion_url=URL('generateRecipeSuggestion'),
     )
 
 
