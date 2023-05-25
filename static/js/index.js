@@ -85,20 +85,23 @@ let init = (app) => {
         console.log("Ingredient Input Box Cleared!");
     }
 
-    app.getRecipes = function() {
-        // pull shit from the the repo, Carson is working on that
-        let rows = [{}, {}, {}];
-        app.enumerate(rows);
-        app.vue.recipes = rows;
-    }
-
     app.addRecipe = function() {
         let new_row = {}
         new_row._idx = app.vue.recipes.length;
         // Push the recipe content to the row
         new_row.content = "New Recipe";
         
-        app.vue.resolveComponent.push(new_row);
+        app.vue.recipes.push(new_row);
+    }
+
+    app.getRecipes = function() {
+        // pull shit from the the repo, Carson is working on that
+        // let rows = [{}, {}, {}];
+        // app.enumerate(rows);
+        // app.vue.recipes = rows;
+        for(let i = 0; i < app.vue.recipes.length; i++) {
+            app.addRecipe();
+        }
     }
 
     app.genRecipe = function() {
@@ -129,6 +132,7 @@ let init = (app) => {
         // Put here any initialization code.
         // Typically this is a server GET call to load the data.
         app.getPantry();
+        app.getRecipes();
     };
 
     // Call to the initializer.
@@ -137,5 +141,5 @@ let init = (app) => {
 
 // This takes the (empty) app object, and initializes it,
 // putting all the code i
-console.log("Initting vue app! JavaScript is fo sho being loaded");
+// console.log("Initting vue app! JavaScript is fo sho being loaded");
 init(app);
