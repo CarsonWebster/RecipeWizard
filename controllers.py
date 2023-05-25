@@ -84,35 +84,29 @@ def deleteItem():
     return dict()
 
 defaultPrompt = """
-        Instructions:
-        Given a list of ingredients and user preferences, generate recipe suggestions that meet all the following criteria:
-        
-        1. To reduce food waste and maximize resourcefulness utilize the provided ingredients exclusively
-        
-        2. Exclude recipes that contain restricted ingredients based on dietary restriction (e.g., vegetarian, vegan, gluten-free)
-        
-        3. Offer a variety of recipe options, including breakfast, lunch, dinner, snacks, and desserts, 
-        to cater to different meal preferences.
-        
-        4. Optionally, consider recipes that are quick and easy to prepare, 
-        
-        perfect for busy individuals or those with limited cooking time.
-        
-        5. Optionally, provide recipes with a balanced nutritional profile, considering macronutrients and minimizing sugar content.
-        
-        Please tap into your culinary expertise and creativity to generate diverse, delicious, and practical recipe suggestions. 
-        Assume the provided ingredients are available in sufficient quantities. 
-        If necessary, you can make reasonable assumptions about ingredient preparation techniques 
-        (e.g., chopping, cooking methods).
-        
-        Examples:
-        Ingredients: [List the ingredients]
-        Dietary Preferences: [Specify the user's dietary preferences]
-        Number of People: [Specify the number of people the user is cooking for]
+Instructions:
+Given a list of ingredients and user preferences, generate a recipe suggestion that meets all the following criteria:
+    1.  Utilize the provided ingredients exclusively to reduce food waste and maximize resourcefulness.
+    2.  Exclude recipes that contain restricted ingredients based on dietary restrictions. 
+        For example, for vegetarian recipes, do not include any animal-based ingredients, including meat like beef, chicken, fish, lamb, etc. Additionally, consider other common dietary restrictions such as vegan, gluten-free, nut allergies, etc. Exclude specific ingredients based on the stated dietary preferences, unless "NONE" is specified.
+    3.  Offer a variety of recipe options, including breakfast, lunch, dinner, snacks, and desserts, to cater to different meal preferences.
+    4.  Optionally, consider recipes that are quick and easy to prepare, perfect for busy individuals or those with limited cooking time.
+    5.  Optionally, provide recipes with a balanced nutritional profile, considering macronutrients and minimizing sugar content.
 
-        Please generate a single recipe based on the provided information.
-        
-        user input : 
+    Please tap into your culinary expertise and creativity to generate diverse, delicious, and practical recipe suggestions. 
+    Assume the provided ingredients are available in sufficient quantities.
+    If necessary, you can make reasonable assumptions about ingredient preparation techniques (e.g., chopping, cooking methods).
+
+Examples:
+Ingredients: [List the ingredients]
+Dietary Preferences: [Specify the dietary preferences and restrictions, e.g., Vegetarian, Vegan, Gluten-free, Nut allergies, NONE]
+Number of People: [Specify the number of people the user is cooking for]
+
+Please generate a single recipe based on the provided information.
+
+User input: [Provide the list of ingredients and specify the dietary preferences and restrictions, as well as the number of people cooking for.]
+
+RULE : meat-based options should be included when "NONE" is specified as the dietary preference, the recipe suggestions will be more inclusive and diverse.
 """
 
 @action('generateRecipeSuggestion', method="GET")
