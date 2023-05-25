@@ -70,9 +70,21 @@
   <!-- Main columns div -->
   <button class="button is-link" @click="addRecipe">Generate New Recipe!</button>
 
-  <div class="control tile is-ancestor">
-    <!-- Maybe use modulo for the three columns-->
+  <!-- <div class="control tile is-ancestor">
+    
     <div v-for="recipe in recipes" class="tile is-one-third">
+      <div  class="card">
+        <div class="card-content">
+          <button class="button is-link" @click="genRecipe(recipe._idx)">Regenerate Recipe!</button>
+          <div class="content">
+            {{recipe.content}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+  <div class="control columns">
+    <div v-for="recipe in recipes" class="column is-one-third">
       <div  class="card">
         <div class="card-content">
           <button class="button is-link" @click="genRecipe(recipe._idx)">Regenerate Recipe!</button>
