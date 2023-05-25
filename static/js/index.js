@@ -99,11 +99,11 @@ let init = (app) => {
         // let rows = [{}, {}, {}];
         // app.enumerate(rows);
         // app.vue.recipes = rows;
-        for(let i = 0; i < app.vue.recipes.length; i++) {
+        for(let i = 0; i < 3; i++) {
             app.addRecipe();
         }
     }
-
+    
     app.genRecipe = function() {
         
     }
