@@ -13,6 +13,7 @@ let init = (app) => {
         ingredientInput: "",    // Holds the data from the pantry input
         pantry: [],             // Holds all items in logged in users pantry
         recipes: [],
+        generated_recipes: []
     }; 
 
     app.enumerate = (a) => {
@@ -114,8 +115,12 @@ let init = (app) => {
         }
     }
     
-    app.genRecipe = function() {
-
+    app.genRecipe = function(idx) {
+        console.log("genning recipe:")
+        axios.get(generateRecipeSuggestion_url).then((response) => {
+            console.log(response)
+            app.vue.recipes[idx].content = response.data
+        })
     }
     app.toggleRecipe = function(row_idx) {
         app.vue.recipes[row_idx].show = !app.vue.recipes[row_idx].show
