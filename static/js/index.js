@@ -82,7 +82,14 @@ let init = (app) => {
     app.clearIngredientInput = function() {
         // Clear the search query
         this.ingredientInput = "";
-        console.log("Ingredient Input Box Cleared!");
+        console.log("Ingredient Input Box Cleared");
+    }
+
+    app.generateRecipeSuggestion = function() {
+        console.log("Generated Recipe Suggestion")
+        axios.get(generateRecipeSuggestion_url).then((data) => {
+            console.log(data)
+        })
     }
 
     app.addRecipe = function() {
@@ -124,15 +131,15 @@ let init = (app) => {
     // This contains all the methods.
     app.methods = {
         // Complete as you see fit.
-
         addItemToPantry: app.addItemToPantry,
         clearIngredientInput: app.clearIngredientInput,
         deleteItem: app.deleteItem,
+      
+        generateRecipeSuggestion: app.generateRecipeSuggestion,
         getRecipes: app.getRecipes,
         addRecipe: app.addRecipe,
         genRecipe: app.genRecipe,
         toggleRecipe: app.toggleRecipe,
-        testCompletion: app.testCompletion,
     };
 
     // This creates the Vue instance.
