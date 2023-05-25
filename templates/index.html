@@ -78,8 +78,8 @@
   <article v-for="recipe in recipes" class="message is-dark control">
     <div class="message-header">
       <p>Recipe # {{recipe._idx}}</p>
-      <button class="button is-link" @click="toggleRecipe(recipe._idx)">show/hide</button>
-      <button class="delete" aria-label="delete"></button>
+      <button class="button is-link is-rounded is-small is-responsive" @click="toggleRecipe(recipe._idx)">show/hide</button>
+      <!-- <button class="delete" aria-label="delete"></button> -->
     </div>
     <div v-if="recipe.show" class="message-body"> 
       <button class="button is-link" @click="genRecipe(recipe._idx)">Regenerate Recipe!</button>
