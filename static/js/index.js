@@ -12,6 +12,7 @@ let init = (app) => {
         // Complete as you see fit.
         ingredientInput: "",    // Holds the data from the pantry input
         pantry: [],             // Holds all items in logged in users pantry
+        recipes: [],
     }; 
 
     app.enumerate = (a) => {
@@ -84,6 +85,36 @@ let init = (app) => {
         console.log("Ingredient Input Box Cleared!");
     }
 
+    app.addRecipe = function() {
+        let new_row = {}
+        new_row._idx = app.vue.recipes.length;
+        // Push the recipe content to the row
+        new_row.content = "New Recipe";
+        
+        app.vue.recipes.push(new_row);
+    }
+
+    app.getRecipes = function() {
+        // pull shit from the the repo, Carson is working on that
+        // let rows = [{}, {}, {}];
+        // app.enumerate(rows);
+        // app.vue.recipes = rows;
+        for(let i = 0; i < 3; i++) {
+            app.addRecipe();
+        }
+    }
+    
+    app.genRecipe = function() {
+
+    }
+        
+    app.testCompletion = function() {
+        console.log("Testing completion")
+        axios.get(testCompletion_url).then((data) => {
+            console.log(data)
+        })
+    }
+
     // This contains all the methods.
     app.methods = {
         // Complete as you see fit.
@@ -91,6 +122,10 @@ let init = (app) => {
         addItemToPantry: app.addItemToPantry,
         clearIngredientInput: app.clearIngredientInput,
         deleteItem: app.deleteItem,
+        getRecipes: app.getRecipes,
+        addRecipe: app.addRecipe,
+        genRecipe: app.genRecipe,
+        testCompletion: app.testCompletion,
     };
 
     // This creates the Vue instance.
@@ -105,6 +140,7 @@ let init = (app) => {
         // Put here any initialization code.
         // Typically this is a server GET call to load the data.
         app.getPantry();
+        app.getRecipes();
     };
 
     // Call to the initializer.
@@ -113,5 +149,5 @@ let init = (app) => {
 
 // This takes the (empty) app object, and initializes it,
 // putting all the code i
-console.log("Initting vue app! JavaScript is fo sho being loaded");
+// console.log("Initting vue app! JavaScript is fo sho being loaded");
 init(app);

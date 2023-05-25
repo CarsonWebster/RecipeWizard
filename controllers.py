@@ -31,17 +31,24 @@ from .common import db, session, T, cache, auth, logger, authenticated, unauthen
 from py4web.utils.url_signer import URLSigner
 from .models import get_user_email
 
+import openai
+from dotenv import dotenv_values
+secrets = dotenv_values("apps/RecipeWizard/.env")
+
 url_signer = URLSigner(session)
+
 
 @action('index')
 @action.uses('index.html', db, auth.user, url_signer)
 def index():
     return dict(
         # COMPLETE: return here any signed URLs you need.
-        getPantry_url = URL('getPantry', signer=url_signer),
-        addItemToPantry_url = URL('addItemToPantry', signer=url_signer),
-        deleteItem_url = URL('deleteItem', signer=url_signer),
+        getPantry_url=URL('getPantry', signer=url_signer),
+        addItemToPantry_url=URL('addItemToPantry', signer=url_signer),
+        deleteItem_url=URL('deleteItem', signer=url_signer),
+        testCompletion_url=URL('testCompletion'),
     )
+
 
 @action('getPantry', method="GET")
 @action.uses(db, auth.user, url_signer)
@@ -49,6 +56,7 @@ def getPantry():
     userID = auth.current_user.get("id")
     pantry = db(db.pantry.userID == userID).select().as_list()
     return dict(pantry=pantry)
+
 
 @action('addItemToPantry', method="POST")
 @action.uses(db, auth.user, url_signer)
@@ -58,16 +66,82 @@ def addItemToPantry():
     if db((db.pantry.userID == userID) & (db.pantry.item == item)).select().first():
         return dict(success=False)
     db.pantry.insert(
-        userID = userID,
-        item = item,
+        userID=userID,
+        item=item,
     )
-    newItem = db((db.pantry.userID == userID) & (db.pantry.item == item)).select().first()
-    return dict(success=True, newItem = newItem)
+
+    newItem = db(db.pantry.item == item).select().first()
+    return dict(success=True, newItem=newItem)
 
 # probably need to add security to this
+
+
 @action('deleteItem', method="POST")
 @action.uses(db, auth.user, url_signer)
 def deleteItem():
     itemID = request.json.get("itemID")
     db(db.pantry.id == itemID).delete()
     return dict()
+
+defaultPrompt = """
+        Title: Recipe Wizard - Creating Delicious Meals from Your Pantry
+
+        Description:
+        I am developing Recipe Wizard, an innovative app that helps users make the most of the ingredients they have in their pantry. 
+        By providing a list of ingredients, the system will suggest recipes tailored to their preferences. 
+        It will consider dietary restrictions, serving size, and provide detailed nutritional information for each recipe.
+        
+        Instructions:
+        Given a list of ingredients and user preferences, generate recipe suggestions that meet the following criteria:
+        
+        1. Utilize as many of the provided ingredients as possible to reduce food waste and maximize resourcefulness.
+        
+        2. Take into account dietary preferences (e.g., vegetarian, vegan, gluten-free) 
+        and exclude recipes that contain restricted ingredients.
+        
+        3. Offer a variety of recipe options, including breakfast, lunch, dinner, snacks, and desserts, 
+        to cater to different meal preferences.4. Optionally, consider recipes that are quick and easy to prepare, 
+        perfect for busy individuals or those with limited cooking time.
+        
+        5. Optionally, provide recipes with a balanced nutritional profile, considering macronutrients and minimizing sugar content.
+        
+        Please tap into your culinary expertise and creativity to generate diverse, delicious, and practical recipe suggestions. 
+        Assume the provided ingredients are available in sufficient quantities. 
+        If necessary, you can make reasonable assumptions about ingredient preparation techniques 
+        (e.g., chopping, cooking methods).
+        
+        Examples:
+        Ingredients: [List the ingredients]
+        Dietary Preferences: [Specify the user's dietary preferences]
+        Number of People: [Specify the number of people the user is cooking for]
+        Please generate at least [Specify the number of recipe suggestions] recipe ideas based on the provided information.
+        
+        Closing:
+        Thank you for being a vital part of Recipe Wizard, helping users unlock the potential of their pantry ingredients 
+        to create mouthwatering meals. Your invaluable contributions are deeply appreciated!
+        
+        user input : 
+"""
+
+@action('testCompletion', method="GET")
+@action.uses(db, auth.user)
+def testCompletion():
+    print("Calling a test completion!")
+    print("Here are the secrets" + str(secrets))
+    openai.api_key = secrets["OPENAI_KEY"]
+
+
+    userID = auth.current_user.get("id")
+    ingredients = db(db.pantry.userID == userID).select().as_list()
+    dietaryPreferences = ["vegetarian"] # TODO in future want to pull from URL
+    numberOfPeople = 3                  # TODO in future want to pull from URL
+    
+    response = openai.Completion.create(
+        model="text-davinci-003",
+        prompt= f"{defaultPrompt} {str(ingredients)}, {str(dietaryPreferences)}, {numberOfPeople}",
+        max_tokens=15,
+        temperature=0.3,
+    )
+    print(response)
+    print(response.choices[0].text)
+    return(response.choices[0].text)
