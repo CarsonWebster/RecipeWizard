@@ -36,7 +36,7 @@ let init = (app) => {
     app.getPantry = function() {
         axios.get(getPantry_url).then(function (r) {
             app.vue.pantry = r.data.pantry;
-            updatePantryRows();
+            app.updatePantryRows();
             // console.log(app.vue.pantry)
         });
     }
@@ -67,7 +67,7 @@ let init = (app) => {
                 this.ingredientInput = "";
                 // app.getPantry();
                 app.vue.pantry.push(data.newItem);
-                updatePantryRows();
+                app.updatePantryRows();
             } else {
                 console.log("Item already in pantry");
                 alert("Item already in pantry");
@@ -88,7 +88,7 @@ let init = (app) => {
         }).then((response) => response.json()).then((data) => {
             console.log("Item deleted");
             app.getPantry();    // could also just remove item from pantry for more efficiency but less consistency
-            updatePantryRows();
+            app.updatePantryRows();
         });
     }
 
