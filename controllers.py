@@ -27,30 +27,51 @@ Warning: Fixtures MUST be declared with @action.uses({fixtures}) else your app w
 
 from py4web import action, request, abort, redirect, URL
 from yatl.helpers import A
-from .common import db, session, T, cache, auth, logger, authenticated, unauthenticated, flash
+from .common import (
+    db,
+    session,
+    T,
+    cache,
+    auth,
+    logger,
+    authenticated,
+    unauthenticated,
+    flash,
+)
+from datetime import datetime
 from py4web.utils.url_signer import URLSigner
 from .models import get_user_email
 
+import openai
+from dotenv import dotenv_values
+
+secrets = dotenv_values("apps/RecipeWizard/.env")
+
 url_signer = URLSigner(session)
 
-@action('index')
-@action.uses('index.html', db, auth.user, url_signer)
+
+@action("index")
+@action.uses("index.html", db, auth.user, url_signer)
 def index():
     return dict(
         # COMPLETE: return here any signed URLs you need.
-        getPantry_url = URL('getPantry', signer=url_signer),
-        addItemToPantry_url = URL('addItemToPantry', signer=url_signer),
-        deleteItem_url = URL('deleteItem', signer=url_signer),
+        getPantry_url=URL("getPantry", signer=url_signer),
+        addItemToPantry_url=URL("addItemToPantry", signer=url_signer),
+        deleteItem_url=URL("deleteItem", signer=url_signer),
+        generateRecipeSuggestion_url=URL("generateRecipeSuggestion"),
+        getRecipes_url=URL("getRecipes", signer=url_signer),
     )
 
-@action('getPantry', method="GET")
+
+@action("getPantry", method="GET")
 @action.uses(db, auth.user, url_signer)
 def getPantry():
     userID = auth.current_user.get("id")
     pantry = db(db.pantry.userID == userID).select().as_list()
     return dict(pantry=pantry)
 
-@action('addItemToPantry', method="POST")
+
+@action("addItemToPantry", method="POST")
 @action.uses(db, auth.user, url_signer)
 def addItemToPantry():
     userID = auth.current_user.get("id")
@@ -58,23 +79,80 @@ def addItemToPantry():
     if db((db.pantry.userID == userID) & (db.pantry.item == item)).select().first():
         return dict(success=False)
     db.pantry.insert(
-        userID = userID,
-        item = item,
+        userID=userID,
+        item=item,
     )
-<<<<<<< Updated upstream
     newItem = db((db.pantry.userID == userID) & (db.pantry.item == item)).select().first()
     return dict(success=True, newItem = newItem)
-=======
-
-    newItem = db((db.pantry.userID == userID) & (db.pantry.item == item)).select().first()
-    return dict(success=True, newItem=newItem)
->>>>>>> Stashed changes
-
 
 # probably need to add security to this
-@action('deleteItem', method="POST")
+@action("deleteItem", method="POST")
 @action.uses(db, auth.user, url_signer)
 def deleteItem():
     itemID = request.json.get("itemID")
     db(db.pantry.id == itemID).delete()
     return dict()
+
+
+defaultPrompt = """
+Instructions:
+Given a list of ingredients and user preferences, generate a recipe suggestion that meets all the following criteria:
+    1.  Utilize the provided ingredients exclusively to reduce food waste and maximize resourcefulness.
+    2.  Exclude recipes that contain restricted ingredients based on dietary restrictions. 
+        For example, for vegetarian recipes, do not include any animal-based ingredients, including meat like beef, chicken, fish, lamb, etc. Additionally, consider other common dietary restrictions such as vegan, gluten-free, nut allergies, etc. Exclude specific ingredients based on the stated dietary preferences, unless "NONE" is specified.
+    3.  Offer a variety of recipe options, including breakfast, lunch, dinner, snacks, and desserts, to cater to different meal preferences.
+    4.  Optionally, consider recipes that are quick and easy to prepare, perfect for busy individuals or those with limited cooking time.
+    5.  Optionally, provide recipes with a balanced nutritional profile, considering macronutrients and minimizing sugar content.
+
+    Please tap into your culinary expertise and creativity to generate diverse, delicious, and practical recipe suggestions. 
+    Assume the provided ingredients are available in sufficient quantities.
+    If necessary, you can make reasonable assumptions about ingredient preparation techniques (e.g., chopping, cooking methods).
+
+Examples:
+Ingredients: [List the ingredients]
+Dietary Preferences: [Specify the dietary preferences and restrictions, e.g., Vegetarian, Vegan, Gluten-free, Nut allergies, NONE]
+Number of People: [Specify the number of people the user is cooking for]
+
+Please generate a single recipe based on the provided information.
+
+User input: [Provide the list of ingredients and specify the dietary preferences and restrictions, as well as the number of people cooking for.]
+
+RULE : meat-based options should be included when "NONE" is specified as the dietary preference, the recipe suggestions will be more inclusive and diverse.
+"""
+
+
+@action("generateRecipeSuggestion", method="GET")
+@action.uses(db, auth.user)
+def generateRecipeSuggestion():
+    print("Calling a recipe suggestion generation!")
+    # print("Here are the secrets" + str(secrets))
+    openai.api_key = secrets["OPENAI_KEY"]
+
+    userID = auth.current_user.get("id")
+    ingredients = db(db.pantry.userID == userID).select().as_list()
+    dietaryPreferences = ["vegetarian"]  # TODO in future want to pull from URL
+    numberOfPeople = 3  # TODO in future want to pull from URL
+
+    response = openai.Completion.create(
+        model="text-davinci-003",
+        prompt=f"{defaultPrompt} Ingredients : {str(ingredients)}, Dietary Restrictions : {str(dietaryPreferences)}, Number of People : {numberOfPeople}",
+        max_tokens=200,
+        temperature=0.3,
+    )
+    # print(response)
+    userID = auth.current_user.get("id")
+    db.recipes.insert(
+        created_by=userID,
+        recipe=response.choices[0].text,
+    )
+    print(response.choices[0].text)
+    return response.choices[0].text
+
+
+@action("getRecipes", method="GET")
+@action.uses(db, auth.user, url_signer)
+def getRecipes():
+    userID = auth.current_user.get("id")
+    recipes = db(db.recipes.created_by == userID).select(db.recipes.recipe).as_list()
+    print(recipes)
+    return dict(recipes=recipes)

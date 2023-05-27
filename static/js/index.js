@@ -12,14 +12,14 @@ let init = (app) => {
         // Complete as you see fit.
         ingredientInput: "",    // Holds the data from the pantry input
         pantry: [],             // Holds all items in logged in users pantry
-<<<<<<< Updated upstream
-=======
         recipes: [],
         generated_recipes: [],
         numPantryRows: 5,       // Number of rows to display in the pantry
         pantryExpanded: false,  
         displayTrash: -1,       // Which trashcan to display
->>>>>>> Stashed changes
+
+        recipes: [],
+        generated_recipes: []
     }; 
 
     app.enumerate = (a) => {
@@ -95,9 +95,6 @@ let init = (app) => {
     app.clearIngredientInput = function() {
         // Clear the search query
         this.ingredientInput = "";
-<<<<<<< Updated upstream
-        console.log("Ingredient Input Box Cleared!");
-=======
     }
 
     app.togglePantryExpanded = function() {
@@ -134,9 +131,23 @@ let init = (app) => {
         // app.vue.recipes = rows;
 
         // TODO: this will be replaced with an api call
-        for(let i = 0; i < 3; i++) {
-            app.addRecipe();
-        }
+        // for(let i = 0; i < 3; i++) {
+        //     app.addRecipe();
+        // }
+        axios.get(getRecipes_url).then((r) => {
+            console.log(r.data.recipes);
+            for(let i = 0; i < r.data.recipes.length; i++) {
+                let new_row = {}
+                new_row._idx = app.vue.recipes.length;
+                // Push the recipe content to the row
+                new_row.content = r.data.recipes[i].recipe;
+                new_row.show = false;
+                
+                app.vue.recipes.push(new_row);
+            }
+            
+        });
+
     }
     
     app.genRecipe = function(idx) {
@@ -155,18 +166,14 @@ let init = (app) => {
         axios.get(testCompletion_url).then((data) => {
             console.log(data)
         })
->>>>>>> Stashed changes
     }
 
     // This contains all the methods.
     app.methods = {
         // Complete as you see fit.
-
         addItemToPantry: app.addItemToPantry,
         clearIngredientInput: app.clearIngredientInput,
         deleteItem: app.deleteItem,
-<<<<<<< Updated upstream
-=======
         togglePantryExpanded: app.togglePantryExpanded,
         setDisplayTrash: app.setDisplayTrash,
       
@@ -175,7 +182,6 @@ let init = (app) => {
         addRecipe: app.addRecipe,
         genRecipe: app.genRecipe,
         toggleRecipe: app.toggleRecipe,
->>>>>>> Stashed changes
     };
 
     // This creates the Vue instance.
@@ -190,11 +196,8 @@ let init = (app) => {
         // Put here any initialization code.
         // Typically this is a server GET call to load the data.
         app.getPantry();
-<<<<<<< Updated upstream
-=======
         updatePantryRows();
         app.getRecipes();
->>>>>>> Stashed changes
     };
 
     // Call to the initializer.
@@ -203,5 +206,5 @@ let init = (app) => {
 
 // This takes the (empty) app object, and initializes it,
 // putting all the code i
-console.log("Initting vue app! JavaScript is fo sho being loaded");
+// console.log("Initting vue app! JavaScript is fo sho being loaded");
 init(app);

@@ -15,6 +15,11 @@ Or if currently in apps folder
 git clone https://github.com/CarsonWebster/RecipeWizard.git
 ```
 
+## Install Python dependencies
+```
+pip install -r requirements.txt
+```
+
 ## Pull request model
 When developing a new feature yourself, with a pair, or together as a team, create a feature branch to avoid merge conflicts. Remeber to pull frequently before starting a coding session. 
 Creating a new branch:

@@ -8,25 +8,8 @@
 
 
 <div class="section" id="vue-target" v-cloak>
-  
+
   <div class="columns">
-<<<<<<< Updated upstream
-    <div class="column is-one-quarter">
-    </div>
-    <div class="column is-half">
-      <div class="pantryContainer">
-        <div class="titleText">Your Pantry:</div>
-        <div class="pantryBox">
-          <div class="pantryHead">
-            <!-- <div class="titleText">Your Pantry:</div> -->
-            <div class="pantryTextBoxAndButton">
-              <div class="pantryTextBoxContainer">
-                <div class="control has-icons-right"></p>
-                  <input class="pantryTextBox" type="text" placeholder="Enter pantry ingredient" v-model="ingredientInput" v-on:keyup.enter="addItemToPantry">
-                  <span v-show="ingredientInput.length != 0" class="icon is-right is-clickable f-21" @click="clearIngredientInput">
-                    <i class="fa fa-times-circle"></i>
-                  </span>
-=======
     <div class="column is-8 is-offset-2">
       <div class="columns">
         <div class="column is-7">
@@ -50,7 +33,6 @@
                       <i class="fa fa-plus"></i>
                     </div>
                   </div>
->>>>>>> Stashed changes
                 </div>
               </div>
               <div class="pantryBody">
@@ -122,30 +104,6 @@
             <button class="button is-link" @click="addRecipe">Generate New Recipe!</button>
           </div>
 
-<<<<<<< Updated upstream
-          <table class="table scrollable rounded-bottom">
-            <tbody>
-              <tr v-if="pantry.length == 0">
-                <td class="emptyPantry">
-                  <span class="level">
-                    <span class="level-left ml-1">Pantry is empty...</span>
-                    </span>
-                  </span>
-                </td>
-              </tr>
-              <tr v-for="item in pantry.slice().reverse()">
-                <td class="pantryItem">
-                  <span class="level">
-                    <span class="level-left ml-1">{{item.item}}</span>
-                    <span class="icon level-right is-small is-clickable mr-2 icon-color" @click="deleteItem(item.id)">
-                      <i class="fa fa-trash"></i>
-                    </span>
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-=======
           <article v-for="recipe in recipes" class="message is-dark control">
             <div class="message-header">
               <p>Recipe # {{recipe._idx}}</p>
@@ -160,50 +118,12 @@
               </div>
             </div>
           </article>
->>>>>>> Stashed changes
         </div>
       </div>
     </div>
-  </div>
-<<<<<<< Updated upstream
+  </div>  
 
-  <!-- Main columns div -->
-  <div class="columns">
-    <div class="column is-one-third">
-      <div class="card">
-        <div class="card-content">
-          <div class="content">
-            Single AI Generated Recipe
-          </div>
-        </div>
-      </div>
-    </div>
-=======
-  
->>>>>>> Stashed changes
-
-    <div class="column is-one-third">
-      <div class="card">
-        <div class="card-content">
-          <div class="content">
-            Single AI Generated Recipe
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="column is-one-third">
-      <div class="card">
-        <div class="card-content">
-          <div class="content">
-            Single AI Generated Recipe
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- columns end div -->
-  </div>
+  <!-- <button class="button is-warning" @click="generateRecipeSuggestion">Test AI Completion python function</button> -->
 
   <!-- section end div -->
 </div>
@@ -215,6 +135,9 @@
   let getPantry_url = "[[=XML(getPantry_url)]]";
   let addItemToPantry_url = "[[=XML(addItemToPantry_url)]]";
   let deleteItem_url = "[[=XML(deleteItem_url)]]";
+  let generateRecipeSuggestion_url = "[[=XML(generateRecipeSuggestion_url)]]";
+  let getRecipes_url = "[[=XML(getRecipes_url)]]";
+
 </script>
 <script src="js/index.js"></script>
 [[end]]
