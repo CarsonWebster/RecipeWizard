@@ -8,15 +8,9 @@
 
 
 <div class="section" id="vue-target" v-cloak>
-  <!-- Put here your Vue.js template -->
-
-  <!-- Pantry input box -->
-  <!-- <div class="pb-4"> -->
-  <!--   <input class="input is-info" type="text" placeholder="Enter pantry ingredient"> -->
-  <!--   <button class="button is-primary">Add Single Pantry Ingredient</button> -->
-  <!-- </div> -->
-
+  
   <div class="columns">
+<<<<<<< Updated upstream
     <div class="column is-one-quarter">
     </div>
     <div class="column is-half">
@@ -32,14 +26,103 @@
                   <span v-show="ingredientInput.length != 0" class="icon is-right is-clickable f-21" @click="clearIngredientInput">
                     <i class="fa fa-times-circle"></i>
                   </span>
+=======
+    <div class="column is-8 is-offset-2">
+      <div class="columns">
+        <div class="column is-7">
+          <div>
+            <div class="pantryBox" @click="pantryExpanded=true">
+              <div class="columns m-0">
+                <div class="column is-6 p-0">
+                  <div class="titleText">My pantry</div>
+                </div>
+                <div class="column is-6 p-0">
+                  <div class="mt-3">
+                    <div class="pantryTextBoxContainer">
+                      <div class="control has-icons-right"></p>
+                        <input class="pantryTextBox" type="text" placeholder="Add item" maxlength="28" v-model="ingredientInput" v-on:keyup.enter="addItemToPantry">
+                        <span v-show="ingredientInput.length != 0" class="icon is-right is-clickable" @click="clearIngredientInput">
+                          <i class="fa fa-times-circle"></i>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="is-clickable addButton" @click="addItemToPantry">
+                      <i class="fa fa-plus"></i>
+                    </div>
+                  </div>
+>>>>>>> Stashed changes
                 </div>
               </div>
-              <div class="is-clickable addButton" @click="addItemToPantry">
-                <i class="fa fa-plus"></i>
+              <div class="pantryBody">
+                <div v-if="pantry.length == 0" class="emptyPantry">Add some items...</div>
+                <div v-if="pantryExpanded == false" v-for="n in 5" class="itemRow">
+                  <div class="columns">
+                    <div class="column is-6 mt-3 mb-3 p-0">
+                      <div v-if="pantry.length > (n+n-2)" class="pantryItem ml-3" @mouseenter="displayTrash = n+n-1" @mouseleave="displayTrash = -1">
+                        <span class="level top-8">
+                          <span class="level-left ml-1">{{pantry[(n+n-2)].item}}</span>
+                          <span v-if="displayTrash == n+n-1" class="icon level-right is-small is-clickable mr-2 icon-color">
+                            <i class="fa fa-trash" @click="deleteItem(pantry[(n+n-2)].id)"></i>
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="column is-6 mt-3 mb-3 p-0">
+                      <div v-if="pantry.length > (n+n-1)" class="pantryItem mr-3" @mouseenter="displayTrash = n+n" @mouseleave="displayTrash = -1">
+                        <span class="level top-8">
+                          <span class="level-left ml-1">{{pantry[(n+n-1)].item}}</span>
+                          <span v-if="displayTrash == n+n" class="icon level-right is-small is-clickable mr-2 icon-color">
+                            <i class="fa fa-trash" @click="deleteItem(pantry[(n+n-1)].id)"></i>
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div v-if="pantryExpanded == true" v-for="n in numPantryRows" class="itemRow">
+                  <div class="columns">
+                    <div class="column is-6 mt-3 mb-3 p-0">
+                      <div v-if="pantry.length > (n+n-2)" class="pantryItem ml-3" @mouseenter="displayTrash = n+n-1" @mouseleave="displayTrash = -1">
+                        <span class="level top-8">
+                          <span class="level-left ml-1">{{pantry[(n+n-2)].item}}</span>
+                          <span v-if="displayTrash == n+n-1" class="icon level-right is-small is-clickable mr-2 icon-color">
+                            <i class="fa fa-trash" @click="deleteItem(pantry[(n+n-2)].id)"></i>
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="column is-6 mt-3 mb-3 p-0">
+                      <div v-if="pantry.length > (n+n-1)" class="pantryItem mr-3" @mouseenter="displayTrash = n+n" @mouseleave="displayTrash = -1">
+                        <span class="level top-8">
+                          <span class="level-left ml-1">{{pantry[(n+n-1)].item}}</span>
+                          <span v-if="displayTrash == n+n" class="icon level-right is-small is-clickable mr-2 icon-color">
+                            <i class="fa fa-trash" @click="deleteItem(pantry[(n+n-1)].id)"></i>
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div v-if="numPantryRows > 5" class="pb-3"></div>
+            </div>
+            <div v-if="numPantryRows > 5">
+              <div v-if="!pantryExpanded" class="minimizeButton is-clickable" @click="pantryExpanded=true">
+                <i class="fa fa-caret-down mt-1"></i>
+              </div>
+              <div v-else class="minimizeButton is-clickable" @click="pantryExpanded=false">
+                <i class="fa fa-caret-up"></i>
               </div>
             </div>
           </div>
+        </div>
+        <div class="column is-5">
+          <!-- Main columns div -->
+          <div class="block">
+            <button class="button is-link" @click="addRecipe">Generate New Recipe!</button>
+          </div>
 
+<<<<<<< Updated upstream
           <table class="table scrollable rounded-bottom">
             <tbody>
               <tr v-if="pantry.length == 0">
@@ -62,10 +145,27 @@
               </tr>
             </tbody>
           </table>
+=======
+          <article v-for="recipe in recipes" class="message is-dark control">
+            <div class="message-header">
+              <p>Recipe # {{recipe._idx}}</p>
+              <button class="button is-link is-rounded is-small is-responsive" @click="toggleRecipe(recipe._idx)">show/hide</button>
+              <!-- <button class="delete" aria-label="delete"></button> -->
+            </div>
+            <!-- TODO: Add loading sign to "Regen Recipe" while recipe is currently being generated -->
+            <div v-if="recipe.show" class="message-body"> 
+              <button class="button is-link" @click="genRecipe(recipe._idx)">Regenerate Recipe!</button>
+              <div class="content" style="white-space: pre-line;">
+                {{recipe.content}}
+              </div>
+            </div>
+          </article>
+>>>>>>> Stashed changes
         </div>
       </div>
     </div>
   </div>
+<<<<<<< Updated upstream
 
   <!-- Main columns div -->
   <div class="columns">
@@ -78,6 +178,9 @@
         </div>
       </div>
     </div>
+=======
+  
+>>>>>>> Stashed changes
 
     <div class="column is-one-third">
       <div class="card">

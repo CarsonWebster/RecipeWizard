@@ -61,8 +61,15 @@ def addItemToPantry():
         userID = userID,
         item = item,
     )
+<<<<<<< Updated upstream
     newItem = db((db.pantry.userID == userID) & (db.pantry.item == item)).select().first()
     return dict(success=True, newItem = newItem)
+=======
+
+    newItem = db((db.pantry.userID == userID) & (db.pantry.item == item)).select().first()
+    return dict(success=True, newItem=newItem)
+>>>>>>> Stashed changes
+
 
 # probably need to add security to this
 @action('deleteItem', method="POST")
