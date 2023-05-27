@@ -29,7 +29,7 @@ let init = (app) => {
         return a;
     };
 
-    updatePantryRows = function() {
+    app.updatePantryRows = function() {
         app.vue.numPantryRows = Math.max(5, Math.ceil(app.vue.pantry.length/2));
     }
 
@@ -196,7 +196,7 @@ let init = (app) => {
         // Put here any initialization code.
         // Typically this is a server GET call to load the data.
         app.getPantry();
-        updatePantryRows();
+        app.updatePantryRows();
         app.getRecipes();
     };
 
