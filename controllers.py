@@ -82,14 +82,10 @@ def addItemToPantry():
         userID=userID,
         item=item,
     )
-
-    newItem = db(db.pantry.item == item).select().first()
-    return dict(success=True, newItem=newItem)
-
+    newItem = db((db.pantry.userID == userID) & (db.pantry.item == item)).select().first()
+    return dict(success=True, newItem = newItem)
 
 # probably need to add security to this
-
-
 @action("deleteItem", method="POST")
 @action.uses(db, auth.user, url_signer)
 def deleteItem():

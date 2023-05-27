@@ -13,6 +13,12 @@ let init = (app) => {
         ingredientInput: "",    // Holds the data from the pantry input
         pantry: [],             // Holds all items in logged in users pantry
         recipes: [],
+        generated_recipes: [],
+        numPantryRows: 5,       // Number of rows to display in the pantry
+        pantryExpanded: false,  
+        displayTrash: -1,       // Which trashcan to display
+
+        recipes: [],
         generated_recipes: []
     }; 
 
@@ -23,9 +29,14 @@ let init = (app) => {
         return a;
     };
 
+    updatePantryRows = function() {
+        app.vue.numPantryRows = Math.max(5, Math.ceil(app.vue.pantry.length/2));
+    }
+
     app.getPantry = function() {
         axios.get(getPantry_url).then(function (r) {
             app.vue.pantry = r.data.pantry;
+            updatePantryRows();
             // console.log(app.vue.pantry)
         });
     }
@@ -33,14 +44,12 @@ let init = (app) => {
     app.addItemToPantry = function() {
         // adds item from ingredientInput box to database with userID
         if(this.pantry.length > 100) {  // add alert/pop up to tell user here
+            alert("You have too many items in your pantry. Please remove some before adding more");
             console.log("You have too many items in your pantry. Please remove some before adding more");
             return;
         }
         item = this.ingredientInput;
         if(item.length == 0) {
-            return;
-        } else if(item.length > 50) {
-            console.log("Entry too long");
             return;
         }
         item = item.charAt(0).toUpperCase() + item.slice(1).toLowerCase();
@@ -58,8 +67,10 @@ let init = (app) => {
                 this.ingredientInput = "";
                 // app.getPantry();
                 app.vue.pantry.push(data.newItem);
+                updatePantryRows();
             } else {
                 console.log("Item already in pantry");
+                alert("Item already in pantry");
             }
         });
     }
@@ -76,14 +87,24 @@ let init = (app) => {
             }),
         }).then((response) => response.json()).then((data) => {
             console.log("Item deleted");
-            app.getPantry();    // could also just remove item from pantry for more efficiency but less consistency 
+            app.getPantry();    // could also just remove item from pantry for more efficiency but less consistency
+            updatePantryRows();
         });
     }
 
     app.clearIngredientInput = function() {
         // Clear the search query
         this.ingredientInput = "";
-        console.log("Ingredient Input Box Cleared");
+    }
+
+    app.togglePantryExpanded = function() {
+        if(app.vue.numPantryRows > 5) {
+            app.vue.pantryExpanded = !app.vue.pantryExpanded;
+        }
+    }
+
+    app.setDisplayTrash = function(n) {
+        app.vue.displayTrash = n;
     }
 
     app.generateRecipeSuggestion = function() {
@@ -153,6 +174,8 @@ let init = (app) => {
         addItemToPantry: app.addItemToPantry,
         clearIngredientInput: app.clearIngredientInput,
         deleteItem: app.deleteItem,
+        togglePantryExpanded: app.togglePantryExpanded,
+        setDisplayTrash: app.setDisplayTrash,
       
         generateRecipeSuggestion: app.generateRecipeSuggestion,
         getRecipes: app.getRecipes,
@@ -173,6 +196,7 @@ let init = (app) => {
         // Put here any initialization code.
         // Typically this is a server GET call to load the data.
         app.getPantry();
+        updatePantryRows();
         app.getRecipes();
     };
 
