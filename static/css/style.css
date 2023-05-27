@@ -1,133 +1,117 @@
-/* html, body {
-	margin: 0;
-	padding: 0;
-} */
-
 ::placeholder {
 	color: rgb(130, 130, 130);
 }
 
-.rounded-bottom {
-	border-bottom-left-radius: 16px;
-	border-bottom-right-radius: 16px;
-}
-
-table.scrollable {
-	display: block;
-	max-height: 305px;
-	overflow-y: scroll;
-}
-
 .titleText {
-	font-size: 30px;
-	/* text-align: center; */
-	margin: 6px;
-}
-
-.pantryContainer {
-	max-width: 375px;
-	margin: auto;
+	font-size: 24px;
+	margin: 24px;
+	line-height: 16px;
 }
 
 .pantryBox {
-	border-radius: 16px;
-	border: 1px solid black;
-	/* width: 100%; */
-}
-
-.pantryHead {
-	border: 0.01px solid transparent;
-	border-bottom: 1px solid lightgrey;
-	background-color: rgb(246, 246, 246);
-	border-top-left-radius: 16px;
-	border-top-right-radius: 16px;
-}
-
-.pantryTextBoxAndButton {
-	margin: 10px;
-	/* margin-top: 0px; */
-	border-radius: 16px;
-	position: relative;
-	left: 4.5px;
-	bottom: 2px;
+	border-radius: 4px;
+	border: 1px solid #d0d0d0;
 }
 
 .pantryTextBoxContainer {
-	width: 82%;
-	/* height: 100%; */
+	width: 65%;
 	display: inline-block;
+	border: 1px solid #d0d0d0;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 0;
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 0;
+
 }
 
 input.pantryTextBox {
-	width: 100%;
-	border-top-left-radius: 16px;
-	border-top-right-radius: 0;
-	border-bottom-left-radius: 16px;
-	border-bottom-right-radius: 0;
-	border: 1px solid grey;
+	width: 84%;
+	border-radius: 4px;
+	border: none;
 	display: inline-block;
-	font-size: large;
-	padding: 14px;
-	/* -webkit-transition: 0.3s;
-	transition: 0.3s; */
+	font-size: 20px;
+	padding: 6px;
 }
 
 input.pantryTextBox:focus{
 	outline: none;
-	padding: 13px;
-	border: 2px solid rgb(96, 228, 178);
 }
 
 .addButton {
 	background-color: rgb(96, 228, 178);
-	width: 16%;
-	height: 100%;
+	width: 12%;
 	border-top-left-radius: 0;
-	border-top-right-radius: 16px;
+	border-top-right-radius: 4px;
 	border-bottom-left-radius: 0;
-	border-bottom-right-radius: 16px;
-	border: 1px solid grey;
-	color: rgb(50, 50, 50);
+	border-bottom-right-radius: 4px;
+	border: 1px solid #d0d0d0;
+	color: rgb(170, 170, 170);
 	display: inline-block;
-	padding-top: 3.8px;
-	padding-bottom: 3.8px;
-	position: relative;
-	right: 6px;
-	top: 4px;
 	text-align: center;
-	font-size: 28px;
+	font-size: 22px;
+	padding-top: 2px;
+	padding-bottom: 0.6px;
+	position: relative;
+	right: 5.5px;
+	top: 1.3px;
 }
 
 .addButton:hover {
 	background-color: rgb(81, 218, 163);
-	color: black;
+	color: rgb(140, 140, 140);
+}
+
+.pantryBody {
+	padding-bottom: 14px;
+	margin-left: 12px;
+	margin-right: 12px;
+}
+
+.emptyPantry {
+	color: rgb(130, 130, 130);
+	height: 0;
+	margin-left: 8px;
+	position: relative;
+	top: 22px;
+}
+
+.itemRow {
+	border-bottom: 1px solid #d0d0d0;
+	height: 66px;
 }
 
 .pantryItem {
-	width: 100vw;
-	/* background-color:rgb(237, 243, 240); */
+	padding-top: 14px;
+	padding-bottom: 14px;
+	padding-right: 4px;
+	padding-left: 4px;
+	border-radius: 4px;
 }
 
 .pantryItem:hover {
 	background-color: rgb(250, 250, 250);
 }
 
-.emptyPantry {
-	color: rgb(130, 130, 130);
-}
-
-.br-16 {
-	border-radius: 16px;
-}
-
-.f-21 {
-	font-size: 21px;
+.minimizeButton {
+	background-color: #f7f7f7;
+	border: 1px solid #d0d0d0;
+	border-top-left-radius: 16px;
+	border-top-right-radius: 16px;
+	margin: auto;
+	width: 26px;
+	text-align: center;
+	height: 20px;
+	z-index: 5;
+	position: relative;
+	bottom: 20px;
+	line-height: 18px;
 }
 
 .icon-color {
-	color: rgb(150, 150, 150);
+	color: rgb(170, 170, 170);
 }
 
-.icon-color:hover {
-	color: rgb(60, 60, 60);
+.top-8 {
+	position: relative;
+	top: 8px;
 }
