@@ -110,9 +110,23 @@ let init = (app) => {
         // app.vue.recipes = rows;
 
         // TODO: this will be replaced with an api call
-        for(let i = 0; i < 3; i++) {
-            app.addRecipe();
-        }
+        // for(let i = 0; i < 3; i++) {
+        //     app.addRecipe();
+        // }
+        axios.get(getRecipes_url).then((r) => {
+            console.log(r.data.recipes);
+            for(let i = 0; i < r.data.recipes.length; i++) {
+                let new_row = {}
+                new_row._idx = app.vue.recipes.length;
+                // Push the recipe content to the row
+                new_row.content = r.data.recipes[i].recipe;
+                new_row.show = false;
+                
+                app.vue.recipes.push(new_row);
+            }
+            
+        });
+
     }
     
     app.genRecipe = function(idx) {
