@@ -116,9 +116,10 @@ let init = (app) => {
         new_recipe._idx = app.vue.recipes.length;
         // Push the recipe content to the row
         new_recipe.content = "New Recipe";
-        new_recipe.show = false;
+        new_recipe.show = true;
         new_recipe.loading = false;
         app.vue.recipes.push(new_recipe);
+        app.genRecipe(new_recipe._idx);
     }
 
     app.getRecipes = function () {
