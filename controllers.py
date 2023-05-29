@@ -60,6 +60,7 @@ def index():
         deleteItem_url=URL("deleteItem", signer=url_signer),
         generateRecipeSuggestion_url=URL("generateRecipeSuggestion"),
         getRecipes_url=URL("getRecipes", signer=url_signer),
+        deleteRecipe_url=URL("deleteRecipe", signer=url_signer),
     )
 
 
@@ -82,8 +83,9 @@ def addItemToPantry():
         userID=userID,
         item=item,
     )
-    newItem = db((db.pantry.userID == userID) & (db.pantry.item == item)).select().first()
-    return dict(success=True, newItem = newItem)
+    newItem = db((db.pantry.userID == userID) & (
+        db.pantry.item == item)).select().first()
+    return dict(success=True, newItem=newItem)
 
 # probably need to add security to this
 @action("deleteItem", method="POST")
@@ -153,6 +155,17 @@ def generateRecipeSuggestion():
 @action.uses(db, auth.user, url_signer)
 def getRecipes():
     userID = auth.current_user.get("id")
-    recipes = db(db.recipes.created_by == userID).select(db.recipes.recipe).as_list()
-    print(recipes)
+    recipes = db(db.recipes.created_by == userID).select(
+        db.recipes.id, db.recipes.recipe).as_list()
+    # print(recipes)
     return dict(recipes=recipes)
+
+
+@action("deleteRecipe", method="POST")
+@action.uses(db, auth.user, url_signer)
+def deleteRecipe():
+    recipeID = request.json.get("recipeID")
+    # print(f"Deleting recipe with ID {recipeID}")
+    status = db(db.recipes.id == recipeID).delete()
+    # print("status:", status)
+    return dict()
