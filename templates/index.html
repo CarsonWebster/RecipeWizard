@@ -51,6 +51,10 @@
                         @mouseleave="displayTrash = -1">
                         <span class="level top-8">
                           <span class="level-left ml-1" contenteditable="true">{{pantry[(n+n-2)].item}}</span>
+                      <div v-if="pantry.length > (n+n-2)" class="pantryItem ml-3" @mouseenter="displayTrash = n+n-1"
+                        @mouseleave="displayTrash = -1">
+                        <span class="level top-8">
+                          <span class="level-left ml-1">{{pantry[(n+n-2)].item}}</span>
                           <span v-if="displayTrash == n+n-1"
                             class="icon level-right is-small is-clickable mr-2 icon-color">
                             <i class="fa fa-trash" @click="deleteItem(pantry[(n+n-2)].id)"></i>
