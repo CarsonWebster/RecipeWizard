@@ -17,7 +17,7 @@
         <div class="column is-7">
           <!-- Whole pantry element -->
           <div>
-            <div class="pantryBox" @click="pantryExpanded=true">
+            <div class="pantryBox">
               <div class="columns m-0">
                 <div class="column is-6 p-0">
                   <div class="titleText">My pantry</div>
@@ -28,14 +28,14 @@
                       <div class="control has-icons-right">
                         </p>
                         <input class="pantryTextBox" type="text" placeholder="Add item" maxlength="28"
-                          v-model="ingredientInput" v-on:keyup.enter="addItemToPantry">
+                          v-model="ingredientInput" v-on:keyup.enter="addItemToPantry(); pantryExpanded=true;">
                         <span v-show="ingredientInput.length != 0" class="icon is-right is-clickable"
                           @click="clearIngredientInput">
                           <i class="fa fa-times-circle"></i>
                         </span>
                       </div>
                     </div>
-                    <div class="is-clickable addButton" @click="addItemToPantry">
+                    <div class="is-clickable addButton" @click="addItemToPantry(); pantryExpanded=true;">
                       <i class="fa fa-plus"></i>
                     </div>
                   </div>
@@ -46,6 +46,7 @@
                 <div v-if="pantryExpanded == false" v-for="n in 5" class="itemRow">
                   <div class="columns">
                     <div class="column is-6 mt-3 mb-3 p-0">
+                      <!-- Left pantry item not expanded -->
                       <div v-if="pantry.length > (n+n-2)" class="pantryItem ml-3" @mouseenter="displayTrash = n+n-1"
                         @mouseleave="displayTrash = -1">
                         <span class="level top-8">
@@ -58,6 +59,7 @@
                       </div>
                     </div>
                     <div class="column is-6 mt-3 mb-3 p-0">
+                      <!-- Right pantry item not expanded -->
                       <div v-if="pantry.length > (n+n-1)" class="pantryItem mr-3" @mouseenter="displayTrash = n+n"
                         @mouseleave="displayTrash = -1">
                         <span class="level top-8">
@@ -74,6 +76,7 @@
                 <div v-if="pantryExpanded == true" v-for="n in numPantryRows" class="itemRow">
                   <div class="columns">
                     <div class="column is-6 mt-3 mb-3 p-0">
+                      <!-- Left pantry item expanded -->
                       <div v-if="pantry.length > (n+n-2)" class="pantryItem ml-3" @mouseenter="displayTrash = n+n-1"
                         @mouseleave="displayTrash = -1">
                         <span class="level top-8">
@@ -86,6 +89,7 @@
                       </div>
                     </div>
                     <div class="column is-6 mt-3 mb-3 p-0">
+                      <!-- Right pantry item expanded -->
                       <div v-if="pantry.length > (n+n-1)" class="pantryItem mr-3" @mouseenter="displayTrash = n+n"
                         @mouseleave="displayTrash = -1">
                         <span class="level top-8">
@@ -100,14 +104,20 @@
                   </div>
                 </div>
               </div>
-              <div v-if="numPantryRows > 5" class="pb-3"></div>
+              <div v-if="(numPantryRows > 5) & (!pantryExpanded)" class="pb-3"></div>
             </div>
             <div v-if="numPantryRows > 5">
-              <div v-if="!pantryExpanded" class="minimizeButton is-clickable" @click="pantryExpanded=true">
-                <i class="fa fa-caret-down mt-1"></i>
+              <div v-if="!pantryExpanded" class="expandButton is-clickable" @click="pantryExpanded=true">
+                <span class="expand-text">More</span>
+                <span class="chevron-icon">
+                  <i class="fa fa-chevron-down mt-1"></i>
+                </span>
               </div>
-              <div v-else class="minimizeButton is-clickable" @click="pantryExpanded=false">
-                <i class="fa fa-caret-up"></i>
+              <div v-else class="collapseButton is-clickable" @click="pantryExpanded=false">
+                <span class="expand-text">Less</span>
+                <span class="chevron-icon">
+                  <i class="fa fa-chevron-up mt-1"></i>
+                </span>
               </div>
             </div>
           </div>
