@@ -22,7 +22,7 @@ def get_time():
 
 
 db.define_table('pantry',
-    Field('userID', 'reference auth_user'),
+    Field('user_id', 'reference auth_user'),
     Field('item', requires=IS_NOT_EMPTY()),
     # Field('quantity', 'float', requires=IS_FLOAT_IN_RANGE(0, 1e6)),
 )
@@ -40,7 +40,7 @@ db.define_table('pantry',
 
 # Here is a simplified recipes table that can easily hold an AI response as a string
 db.define_table('recipes',
-                Field('created_by', 'reference auth_user'),
+                Field('user_id', 'reference auth_user'),
                 Field('recipe', 'text'),
                 Field('created_at', 'datetime', default=get_time()),
                 )

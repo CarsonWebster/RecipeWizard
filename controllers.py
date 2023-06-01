@@ -71,7 +71,7 @@ def index():
 @action.uses(db, auth.user, url_signer)
 def getPantry():
     userID = auth.current_user.get("id")
-    pantry = db(db.pantry.userID == userID).select().as_list()
+    pantry = db(db.pantry.user_id == userID).select().as_list()
     return dict(pantry=pantry)
 
 
@@ -80,13 +80,13 @@ def getPantry():
 def addItemToPantry():
     userID = auth.current_user.get("id")
     item = request.json.get("item")
-    if db((db.pantry.userID == userID) & (db.pantry.item == item)).select().first():
+    if db((db.pantry.user_id == userID) & (db.pantry.item == item)).select().first():
         return dict(success=False)
     db.pantry.insert(
-        userID=userID,
+        user_id=userID,
         item=item,
     )
-    newItem = db((db.pantry.userID == userID) & (
+    newItem = db((db.pantry.user_id == userID) & (
         db.pantry.item == item)).select().first()
     return dict(success=True, newItem=newItem)
 
@@ -155,9 +155,9 @@ Salt and pepper to taste"""
     #     temperature=0.3,
     # )
     # print(response)
-    userID = auth.current_user.get("id")
+    # userID = auth.current_user.get("id")
     db.recipes.insert(
-        created_by=userID,
+        user_id=userID,
         # recipe=response.choices[0].text,
         recipe=testString,
     )
@@ -170,7 +170,7 @@ Salt and pepper to taste"""
 @action.uses(db, auth.user, url_signer)
 def getRecipes():
     userID = auth.current_user.get("id")
-    recipes = db(db.recipes.created_by == userID).select(
+    recipes = db(db.recipes.user_id == userID).select(
         db.recipes.id, db.recipes.recipe).as_list()
     # print(recipes)
     return dict(recipes=recipes)
