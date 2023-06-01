@@ -228,7 +228,16 @@ let init = (app) => {
 
     app.getFavs = function () {
         axios.get(getFavs_url).then(function (r) {
-            app.vue.favorites = r.data.favorites;
+            let favIndex = 0;
+            app.vue.favorites = r.data.favorites.map((favObj) => {
+                const addedFav = {
+                    _idx: favIndex,
+                    dbID: favObj.id,
+                    content: favObj.recipe,
+                };
+                favIndex++;
+                return addedFav;
+            });
             console.log(app.vue.favorites);
         });
     }

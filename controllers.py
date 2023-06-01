@@ -204,6 +204,6 @@ def favRecipe():
 @action.uses(db, auth.user, url_signer)
 def getRecipes():
     userID = auth.current_user.get("id")
-    favorites = db(db.favorites.user_id == userID).select(db.favorites.recipe).as_list()
+    favorites = db(db.favorites.user_id == userID).select().as_list()
     # print(recipes)
     return dict(favorites=favorites)

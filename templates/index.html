@@ -127,8 +127,10 @@
                 <article v-for="fav in favorites" class="favoriteCard">
                   <div class="recipeHeader">
                     <span class="level">
-                      <span class="level-left">Recipe #</span>
+                      <span class="level-left">Favorite #{{fav._idx}}</span>
                       <span class="icon level-right is-small is-clickable icon-color">
+                        <!-- <i class="fa fa-star mr-2 favButton" @click="unFavRecipe(fav._idx)"></i>
+                        <i class="fa fa-trash ml-2" @click="deleteFav(fav._idx)"></i> -->
                         <i class="fa fa-star mr-2 favButton"></i>
                         <i class="fa fa-trash ml-2"></i>
                       </span>

@@ -208,6 +208,8 @@ input.pantryTextBox:focus{
 
 .favorites {
 	display: inline-block;
+	/* border: 1px solid red; */
+	/* width: 100%; */
 }
 
 .favoriteCard {
