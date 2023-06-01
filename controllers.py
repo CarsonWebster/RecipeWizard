@@ -63,6 +63,7 @@ def index():
         deleteRecipe_url=URL("deleteRecipe", signer=url_signer),
         favRecipe_url=URL("favRecipe", signer=url_signer),
         getFavs_url=URL("getFavs", signer=url_signer),
+        deleteFav_url=URL("deleteFav", signer=url_signer),
     )
 
 
@@ -181,6 +182,15 @@ def deleteRecipe():
     recipeID = request.json.get("recipeID")
     # print(f"Deleting recipe with ID {recipeID}")
     status = db(db.recipes.id == recipeID).delete()
+    # print("status:", status)
+    return dict(status = status)
+
+@action("deleteFav", method="POST")
+@action.uses(db, auth.user, url_signer)
+def deleteFav():
+    favID = request.json.get("favID")
+    # print(f"Deleting recipe with ID {recipeID}")
+    status = db(db.favorites.id == favID).delete()
     # print("status:", status)
     return dict(status = status)
 

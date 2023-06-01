@@ -129,10 +129,7 @@
                     <span class="level">
                       <span class="level-left">Favorite #{{fav._idx}}</span>
                       <span class="icon level-right is-small is-clickable icon-color">
-                        <!-- <i class="fa fa-star mr-2 favButton" @click="unFavRecipe(fav._idx)"></i>
-                        <i class="fa fa-trash ml-2" @click="deleteFav(fav._idx)"></i> -->
-                        <i class="fa fa-star mr-2 favButton"></i>
-                        <i class="fa fa-trash ml-2"></i>
+                        <i class="fa fa-star mr-2 favButton" @click="deleteFav(fav._idx)"></i>
                       </span>
                     </span>
                   </div>
@@ -196,6 +193,7 @@
   let deleteRecipe_url = "[[=XML(deleteRecipe_url)]]";
   let favRecipe_url = "[[=XML(favRecipe_url)]]";
   let getFavs_url = "[[=XML(getFavs_url)]]";
+  let deleteFav_url = "[[=XML(deleteFav_url)]]";
 </script>
 <script src="js/index.js"></script>
 [[end]]

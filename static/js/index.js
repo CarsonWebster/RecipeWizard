@@ -203,6 +203,26 @@ let init = (app) => {
         });
     }
 
+    app.deleteFav = function (idx) {
+        console.log("Deleting db favorite:", app.vue.favorites[idx]);
+        fetch(deleteFav_url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                favID: app.vue.favorites[idx].dbID,
+            }),
+        }).then((response) => {
+            console.log("Favorite deleted");
+            console.log(response);
+            // Remove the recipe from the vue list. Does not refresh the index of recipes in vue list
+            // app.vue.recipes.splice(idx, 1);
+            // OR, refresh the list. This is more expensive, but more consistent
+            app.getFavs();
+        });
+    }
+
     app.favRecipe = function (idx) {
         recipeContent = app.vue.recipes[idx].content;
         recipeID = app.vue.recipes[idx].dbID;
@@ -269,6 +289,7 @@ let init = (app) => {
         toggleRecipe: app.toggleRecipe,
         deleteRecipe: app.deleteRecipe,
         favRecipe: app.favRecipe,
+        deleteFav: app.deleteFav,
     };
 
     // This creates the Vue instance.
