@@ -13,6 +13,7 @@ let init = (app) => {
         ingredientInput: "",    // Holds the data from the pantry input
         pantry: [],             // Holds all items in logged in users pantry
         recipes: [],
+        favorites: [],
         generated_recipes: [],
         numPantryRows: 5,       // Number of rows to display in the pantry
         pantryExpanded: false,
@@ -143,7 +144,7 @@ let init = (app) => {
                     _idx: recipeIndex,
                     dbID: recipeObj.id,
                     content: recipeObj.recipe,
-                    show: false,
+                    show: true,
                     loading: false,
                 };
                 recipeIndex++;
@@ -156,18 +157,34 @@ let init = (app) => {
     app.genRecipe = function (idx) {
         console.log("genning recipe:")
         // Toggle recipe loading
-        app.vue.recipes[idx].loading = true;
+        // app.vue.recipes[idx].loading = true;
         app.vue.recipes[idx].content = "Loading...";
+//         app.vue.recipes[idx].content = `
+// Basil-Garlic Beef Burgers
+
+// Ingredients:
+// 1 pound ground beef
+// 2 cloves garlic, minced
+// 2 tablespoons fresh basil, chopped
+// 1 tablespoon avocado oil
+// 4 burger patties
+// Salt and pepper to taste`;
+        console.log(app.vue.recipes[idx].content);
+
         axios.get(generateRecipeSuggestion_url).then((response) => {
-            console.log(response.data)
+            // console.log(response.data)
             // Trim new lines from beginning and end of returned string
-            app.vue.recipes[idx].content = response.data.replace(/^\s+|\s+$/g, "");
-            app.vue.recipes[idx].loading = false;
+            // app.vue.recipes[idx].content = response.data.replace(/^\s+|\s+$/g, "");
+            // app.vue.recipes[idx].loading = false;
+            app.getRecipes();
         })
     }
 
     app.deleteRecipe = function (idx) {
-        console.log("Deleting db recipe:", app.vue.recipes[idx])
+        console.log("Deleting db recipe:", app.vue.recipes[idx]);
+        console.log(idx);
+        console.log(app.vue.recipes[idx].dbID);
+        // console.log(app.vue.recipes[idx]);
         fetch(deleteRecipe_url, {
             method: "POST",
             headers: {
@@ -178,11 +195,41 @@ let init = (app) => {
             }),
         }).then((response) => {
             console.log("Item deleted");
-            // console.log(response);
+            console.log(response);
             // Remove the recipe from the vue list. Does not refresh the index of recipes in vue list
             // app.vue.recipes.splice(idx, 1);
             // OR, refresh the list. This is more expensive, but more consistent
             app.getRecipes();
+        });
+    }
+
+    app.favRecipe = function (idx) {
+        recipeContent = app.vue.recipes[idx].content;
+        recipeID = app.vue.recipes[idx].dbID;
+        fetch(favRecipe_url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                recipeID: recipeID,
+                recipeContent: recipeContent,
+            }),
+        }).then((response) => {
+            // if(response.success == true) {
+            //     console.log("added to favs");
+            // } else {
+            //     console.log("already on favs");
+            // }
+            // app.vue.favorites.push(recipeID);
+            app.getFavs();
+        });
+    }
+
+    app.getFavs = function () {
+        axios.get(getFavs_url).then(function (r) {
+            app.vue.favorites = r.data.favorites;
+            console.log(app.vue.favorites);
         });
     }
 
@@ -212,6 +259,7 @@ let init = (app) => {
         genRecipe: app.genRecipe,
         toggleRecipe: app.toggleRecipe,
         deleteRecipe: app.deleteRecipe,
+        favRecipe: app.favRecipe,
     };
 
     // This creates the Vue instance.
@@ -228,6 +276,7 @@ let init = (app) => {
         app.getPantry();
         app.updatePantryRows();
         app.getRecipes();
+        app.getFavs();
     };
 
     // Call to the initializer.

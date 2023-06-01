@@ -47,10 +47,10 @@ db.define_table('recipes',
 
 # The stared_recipe table holds relationships between users and a recipe they have starred
 # Querry all the stared recipes for a user by asking for all records where user=user
-db.define_table('starred_recipe',
+db.define_table('favorites',
                 Field('user_id', 'reference auth_user'),
-                Field('recipe_id', 'reference recipes'),
-                Field('starred_at', 'datetime', default=get_time()),
+                Field('recipe', 'text'),
+                Field('favorited_at', 'datetime', default=get_time()),
                 )
 
 db.commit()

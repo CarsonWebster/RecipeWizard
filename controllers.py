@@ -61,6 +61,8 @@ def index():
         generateRecipeSuggestion_url=URL("generateRecipeSuggestion"),
         getRecipes_url=URL("getRecipes", signer=url_signer),
         deleteRecipe_url=URL("deleteRecipe", signer=url_signer),
+        favRecipe_url=URL("favRecipe", signer=url_signer),
+        getFavs_url=URL("getFavs", signer=url_signer),
     )
 
 
@@ -128,27 +130,39 @@ RULE : meat-based options should be included when "NONE" is specified as the die
 def generateRecipeSuggestion():
     print("Calling a recipe suggestion generation!")
     # print("Here are the secrets" + str(secrets))
-    openai.api_key = secrets["OPENAI_KEY"]
+    # openai.api_key = secrets["OPENAI_KEY"]
 
     userID = auth.current_user.get("id")
-    ingredients = db(db.pantry.userID == userID).select().as_list()
-    dietaryPreferences = ["vegetarian"]  # TODO in future want to pull from URL
-    numberOfPeople = 3  # TODO in future want to pull from URL
+    # ingredients = db(db.pantry.userID == userID).select().as_list()
+    # dietaryPreferences = ["vegetarian"]  # TODO in future want to pull from URL
+    # numberOfPeople = 3  # TODO in future want to pull from URL
 
-    response = openai.Completion.create(
-        model="text-davinci-003",
-        prompt=f"{defaultPrompt} Ingredients : {str(ingredients)}, Dietary Restrictions : {str(dietaryPreferences)}, Number of People : {numberOfPeople}",
-        max_tokens=200,
-        temperature=0.3,
-    )
+    testString = """Basil-Garlic Beef Burgers
+
+Ingredients:
+1 pound ground beef
+2 cloves garlic, minced
+2 tablespoons fresh basil, chopped
+1 tablespoon avocado oil
+4 burger patties
+Salt and pepper to taste"""
+
+    # response = openai.Completion.create(
+    #     model="text-davinci-003",
+    #     prompt=f"{defaultPrompt} Ingredients : {str(ingredients)}, Dietary Restrictions : {str(dietaryPreferences)}, Number of People : {numberOfPeople}",
+    #     max_tokens=200,
+    #     temperature=0.3,
+    # )
     # print(response)
     userID = auth.current_user.get("id")
     db.recipes.insert(
         created_by=userID,
-        recipe=response.choices[0].text,
+        # recipe=response.choices[0].text,
+        recipe=testString,
     )
-    print(response.choices[0].text)
-    return response.choices[0].text
+    # print(response.choices[0].text)
+    # return response.choices[0].text
+    return testString
 
 
 @action("getRecipes", method="GET")
@@ -168,4 +182,28 @@ def deleteRecipe():
     # print(f"Deleting recipe with ID {recipeID}")
     status = db(db.recipes.id == recipeID).delete()
     # print("status:", status)
-    return dict()
+    return dict(status = status)
+
+@action("favRecipe", method="POST")
+@action.uses(db, auth.user, url_signer)
+def favRecipe():
+    userID = auth.current_user.get("id")
+    # recipeID = request.json.get("recipeID")
+    recipe = request.json.get("recipeContent")
+    # if db(db.favorites.recipe_id == recipeID).select().first():
+    #     print("Failed")
+    #     return dict(success=False)
+    db.favorites.insert(
+        user_id=userID,
+        recipe=recipe,
+    )
+    print("Success")
+    return dict(success=True)
+
+@action("getFavs", method="GET")
+@action.uses(db, auth.user, url_signer)
+def getRecipes():
+    userID = auth.current_user.get("id")
+    favorites = db(db.favorites.user_id == userID).select(db.favorites.recipe).as_list()
+    # print(recipes)
+    return dict(favorites=favorites)

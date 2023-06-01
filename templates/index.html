@@ -14,19 +14,18 @@
     <div class="column is-8 is-offset-2">
       <div class="columns">
         <!-- Pantry column -->
-        <div class="column is-7">
+        <div class="column is-8">
           <!-- Whole pantry element -->
-          <div>
+          <section>
             <div class="pantryBox">
               <div class="columns m-0">
                 <div class="column is-6 p-0">
-                  <div class="titleText">My pantry</div>
+                  <header class="titleText">My pantry</header>
                 </div>
                 <div class="column is-6 p-0">
                   <div class="mt-3">
                     <div class="pantryTextBoxContainer">
                       <div class="control has-icons-right">
-                        </p>
                         <input class="pantryTextBox" type="text" placeholder="Add item" maxlength="28"
                           v-model="ingredientInput" v-on:keyup.enter="addItemToPantry(); pantryExpanded=true;">
                         <span v-show="ingredientInput.length != 0" class="icon is-right is-clickable"
@@ -120,31 +119,59 @@
                 </span>
               </div>
             </div>
-          </div>
+          </section>
+          <section class="favoritesContainer">
+            <header class="titleText">Favorites</header>
+            <div class="columns">
+              <div class="favorites">
+                <article v-for="fav in favorites" class="favoriteCard">
+                  <div class="recipeHeader">
+                    <span class="level">
+                      <span class="level-left">Recipe #</span>
+                      <span class="icon level-right is-small is-clickable icon-color">
+                        <i class="fa fa-star mr-2 favButton"></i>
+                        <i class="fa fa-trash ml-2"></i>
+                      </span>
+                    </span>
+                  </div>
+                  <div class="recipeBody">
+                    <div class="recipeContent">{{fav.content}}</div>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </section>
         </div>
         <!-- Recipes Column -->
-        <div class="column is-5">
-          <div class="block">
-            <button class="button is-link" @click="addRecipe">Generate New Recipe!</button>
-          </div>
+        <div class="column is-4">
+          <div class="recipesColumn">
+            <article class="is-clickable generateButton" @click="addRecipe">Generate New Recipe</article>
 
-          <article v-for="recipe in recipes" class="message is-dark control">
-            <div class="message-header">
-              <p>Recipe # {{recipe._idx}}</p>
-              <button class="button is-link is-rounded is-small is-responsive"
-                @click="toggleRecipe(recipe._idx)">show/hide</button>
-              <!-- <button class="delete" aria-label="delete"></button> -->
-            </div>
-            <!-- TODO: Add loading sign to "Regen Recipe" while recipe is currently being generated -->
-            <div v-if="recipe.show" class="message-body">
-              <button v-if="recipe.loading" class="button is-link is-loading">Loading...</button>
-              <button v-else class="button is-link" @click="genRecipe(recipe._idx)">Regenerate Recipe!</button>
-              <div class="content" style="white-space: pre-line;">
-                {{recipe.content}}
+            <article v-for="recipe in recipes" class="recipeCard">
+              <div class="recipeHeader">
+                <span class="level">
+                  <span class="level-left">Recipe #{{recipe._idx + 1}}</span>
+                  <span class="icon level-right is-small is-clickable icon-color">
+                    <i class="fa fa-star mr-2 favButton" @click="favRecipe(recipe._idx)"></i>
+                    <i class="fa fa-trash ml-2" @click="deleteRecipe(recipe._idx)"></i>
+                  </span>
+                </span>
+                <!-- <p>Recipe #{{recipe._idx + 1}}</p> -->
+                <!-- <button class="button is-link is-rounded is-small is-responsive"
+                  @click="toggleRecipe(recipe._idx)">show/hide</button> -->
+                <!-- <button class="delete" aria-label="delete"></button> -->
               </div>
-              <button class="button is-danger" @click="deleteRecipe(recipe._idx)">Delete Recipe</button>
-            </div>
-          </article>
+              <!-- TODO: Add loading sign to "Regen Recipe" while recipe is currently being generated -->
+              <div v-if="recipe.show" class="recipeBody">
+                <button v-if="recipe.loading" class="button is-link is-loading">Loading...</button>
+                <!-- <button v-else class="button is-link" @click="genRecipe(recipe._idx)">Regenerate Recipe</button> -->
+                <div class="recipeContent">{{recipe.content}}</div>
+                <!-- <button class="button is-link is-rounded is-small is-responsive"
+                  @click="toggleRecipe(recipe._idx)">show/hide</button> -->
+                <!-- <button class="button is-danger" @click="deleteRecipe(recipe._idx)">Delete Recipe</button> -->
+              </div>
+            </article>
+          </div>
         </div>
       </div>
     </div>
@@ -165,6 +192,8 @@
   let generateRecipeSuggestion_url = "[[=XML(generateRecipeSuggestion_url)]]";
   let getRecipes_url = "[[=XML(getRecipes_url)]]";
   let deleteRecipe_url = "[[=XML(deleteRecipe_url)]]";
+  let favRecipe_url = "[[=XML(favRecipe_url)]]";
+  let getFavs_url = "[[=XML(getFavs_url)]]";
 </script>
 <script src="js/index.js"></script>
 [[end]]
