@@ -208,7 +208,10 @@ input.pantryTextBox:focus{
 }
 
 .favorites {
-	display: inline-block;
+	/* display: inline-block; */
+	display: flex;
+	flex-wrap: wrap;
+	/* justify-content: space-between; */
 	/* border: 1px solid red; */
 	/* width: 100%; */
 }
