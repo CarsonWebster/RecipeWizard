@@ -205,17 +205,29 @@ input.pantryTextBox:focus{
 .favoritesContainer {
 	border: 1px solid #d0d0d0;
 	border-radius: 4px;
+	padding: 24px;
+}
+
+.favoritesText {
+	font-size: 24px;
+	margin-left: 16px;
+	margin-top: 8px;
+	margin-bottom: 16px;
 }
 
 .favorites {
-	display: inline-block;
-	/* border: 1px solid red; */
-	/* width: 100%; */
+	display: flex;
+	flex-wrap: wrap;
 }
 
 .favoriteCard {
 	border-radius: 4px;
 	border: 1px solid #d0d0d0;
-	width: 200px;
-	margin: 12px 24px 24px 24px;
+	width: 300px;
+	margin: 10px;
+}
+
+.emptyFavs {
+	color: rgb(130, 130, 130);
+	margin-left: 24px;
 }

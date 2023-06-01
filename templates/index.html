@@ -121,9 +121,10 @@
             </div>
           </section>
           <section class="favoritesContainer">
-            <header class="titleText">Favorites</header>
+            <header class="favoritesText">Favorites</header>
             <div class="columns">
               <div class="favorites">
+                <div v-if="favorites.length == 0" class="emptyFavs">Add some favorites...</div>
                 <article v-for="fav in favorites" class="favoriteCard">
                   <div class="recipeHeader">
                     <span class="level">
