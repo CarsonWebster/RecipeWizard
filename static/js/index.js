@@ -107,10 +107,14 @@ let init = (app) => {
 
     app.generateRecipeSuggestion = function () {
         console.log("Generated Recipe Suggestion")
-        axios.get(generateRecipeSuggestion_url).then((data) => {
-            console.log(data)
-        })
-    }
+        axios.get(generateRecipeSuggestion_url).then((response) => {
+          console.log(response.data)
+          // Access the recipe from the response data
+          const recipe = response.data;
+          // Update the recipes array with the new recipe
+          app.vue.generated_recipes.push(recipe);
+        });
+      }
 
     app.addRecipe = function () {
         let new_recipe = {}
@@ -125,19 +129,6 @@ let init = (app) => {
 
     app.getRecipes = function () {
         axios.get(getRecipes_url).then((r) => {
-            // console.log(r.data.recipes);
-            // for(let i = 0; i < r.data.recipes.length; i++) {
-            //     let new_row = {}
-            //     new_row._idx = app.vue.recipes.length;
-            //     // Push the recipe content to the row
-            //     new_row.content = r.data.recipes[i].recipe;
-            //     new_row.show = false;
-
-            //     app.vue.recipes.push(new_row);
-            // }
-
-            // Change to a map expression
-
             let recipeIndex = 0;
             app.vue.recipes = r.data.recipes.map((recipeObj) => {
                 const addedRecipe = {
