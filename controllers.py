@@ -24,7 +24,8 @@ The path follows the bottlepy syntax.
 session, db, T, auth, and tempates are examples of Fixtures.
 Warning: Fixtures MUST be declared with @action.uses({fixtures}) else your app will result in undefined behavior
 """
-
+import re
+import json
 from py4web import action, request, abort, redirect, URL
 from yatl.helpers import A
 from .common import (
@@ -88,6 +89,8 @@ def addItemToPantry():
     return dict(success=True, newItem=newItem)
 
 # probably need to add security to this
+
+
 @action("deleteItem", method="POST")
 @action.uses(db, auth.user, url_signer)
 def deleteItem():
@@ -97,58 +100,101 @@ def deleteItem():
 
 
 defaultPrompt = """
-Instructions:
-Given a list of ingredients and user preferences, generate a recipe suggestion that meets all the following criteria:
-    1.  Utilize the provided ingredients exclusively to reduce food waste and maximize resourcefulness.
-    2.  Exclude recipes that contain restricted ingredients based on dietary restrictions. 
-        For example, for vegetarian recipes, do not include any animal-based ingredients, including meat like beef, chicken, fish, lamb, etc. Additionally, consider other common dietary restrictions such as vegan, gluten-free, nut allergies, etc. Exclude specific ingredients based on the stated dietary preferences, unless "NONE" is specified.
-    3.  Offer a variety of recipe options, including breakfast, lunch, dinner, snacks, and desserts, to cater to different meal preferences.
-    4.  Optionally, consider recipes that are quick and easy to prepare, perfect for busy individuals or those with limited cooking time.
-    5.  Optionally, provide recipes with a balanced nutritional profile, considering macronutrients and minimizing sugar content.
-
-    Please tap into your culinary expertise and creativity to generate diverse, delicious, and practical recipe suggestions. 
-    Assume the provided ingredients are available in sufficient quantities.
-    If necessary, you can make reasonable assumptions about ingredient preparation techniques (e.g., chopping, cooking methods).
-
-Examples:
-Ingredients: [List the ingredients]
-Dietary Preferences: [Specify the dietary preferences and restrictions, e.g., Vegetarian, Vegan, Gluten-free, Nut allergies, NONE]
-Number of People: [Specify the number of people the user is cooking for]
-
-Please generate a single recipe based on the provided information.
-
-User input: [Provide the list of ingredients and specify the dietary preferences and restrictions, as well as the number of people cooking for.]
-
-RULE : meat-based options should be included when "NONE" is specified as the dietary preference, the recipe suggestions will be more inclusive and diverse.
+{
+  "instructions": "Given a list of ingredients and user preferences, generate a recipe suggestion that meets all the following criteria:",
+  "criteria": [
+    "Utilize the provided ingredients exclusively to reduce food waste and maximize resourcefulness.",
+    "Exclude recipes that contain restricted ingredients based on dietary restrictions. For example, for vegetarian recipes, do not include any animal-based ingredients, including meat like beef, chicken, fish, lamb, etc. Additionally, consider other common dietary restrictions such as vegan, gluten-free, nut allergies, etc. Exclude specific ingredients based on the stated dietary preferences, unless \\"NONE\\" is specified.",
+    "Offer a variety of recipe options, including breakfast, lunch, dinner, snacks, and desserts, to cater to different meal preferences.",
+    "Optionally, consider recipes that are quick and easy to prepare, perfect for busy individuals or those with limited cooking time.",
+    "Optionally, provide recipes with a balanced nutritional profile, considering macronutrients and minimizing sugar content."
+  ],
+  "instructionsNote": "Please tap into your culinary expertise and creativity to generate diverse, delicious, and practical recipe suggestions. Assume the provided ingredients are available in sufficient quantities. If necessary, you can make reasonable assumptions about ingredient preparation techniques (e.g., chopping, cooking methods).",
+  "examples": [
+    {
+      "ingredients": "[List the ingredients]",
+      "dietaryPreferences": "[Specify the dietary preferences and restrictions, e.g., Vegetarian, Vegan, Gluten-free, Nut allergies, NONE]",
+      "numberOfPeople": "[Specify the number of people the user is cooking for]"
+    }
+  ],
+  "prompt": "Please generate a single recipe based on the provided information.",
+  "userInput": "[Provide the list of ingredients and specify the dietary preferences and restrictions, as well as the number of people cooking for.]",
+  "rule": "Meat-based options should be included when \\"NONE\\" is specified as the dietary preference. The AI will generate recipe suggestions that include both meat-based and vegetarian options."
+}
 """
+# Convert the prompt to a JSON string
+prompt_json = json.loads(defaultPrompt)
+
+# Use prompt_json in your code as needed
+# For example:
+# print(prompt_json["instructions"])  # Output: Given a list of ingredients and user preferences, generate a recipe suggestion that meets all the following criteria:
+
+
+def split_recipe_string(recipe):
+    # Regular expressions to match the parts
+    title_re = r'Recipe Suggestion:\n*(.+?)\nIngredients:'
+    ingredients_re = r'Ingredients:\n(.+?)Instructions:'
+    instructions_re = r'Instructions:\n(.+)'
+
+    # Match the parts
+    title_match = re.search(title_re, recipe, re.DOTALL)
+    ingredients_match = re.search(ingredients_re, recipe, re.DOTALL)
+    instructions_match = re.search(instructions_re, recipe, re.DOTALL)
+
+    # Parse the parts
+    title = title_match.group(1).strip() if title_match else None
+    ingredients = ingredients_match.group(1).strip().split(
+        '\n') if ingredients_match else None
+    instructions = instructions_match.group(1).strip().split(
+        '\n') if instructions_match else None
+
+    return {
+        'title': title,
+        'ingredients': ingredients,
+        'instructions': instructions
+    }
 
 
 @action("generateRecipeSuggestion", method="GET")
 @action.uses(db, auth.user)
 def generateRecipeSuggestion():
-    print("Calling a recipe suggestion generation!")
-    # print("Here are the secrets" + str(secrets))
+    print("\nCalling a recipe suggestion generation!")
     openai.api_key = secrets["OPENAI_KEY"]
 
     userID = auth.current_user.get("id")
     ingredients = db(db.pantry.userID == userID).select().as_list()
-    dietaryPreferences = ["vegetarian"]  # TODO in future want to pull from URL
+    dietaryPreferences = []  # TODO in future want to pull from URL
     numberOfPeople = 3  # TODO in future want to pull from URL
 
     response = openai.Completion.create(
         model="text-davinci-003",
-        prompt=f"{defaultPrompt} Ingredients : {str(ingredients)}, Dietary Restrictions : {str(dietaryPreferences)}, Number of People : {numberOfPeople}",
+        prompt=f'{json.dumps(prompt_json)} Ingredients: {json.dumps(ingredients)}, Dietary Preferences: {json.dumps(dietaryPreferences)}, Number of People: {numberOfPeople}',
         max_tokens=200,
         temperature=0.3,
     )
-    # print(response)
-    userID = auth.current_user.get("id")
-    db.recipes.insert(
+
+    # Store the recipe text in a variable
+    recipe_text = response.choices[0].text.strip()
+
+    split_recipe = split_recipe_string(recipe_text)
+    # Print out the separate parts
+    print("Title:", split_recipe["title"])
+    print("Ingredients:", split_recipe["ingredients"])
+    print("Instructions:", split_recipe["instructions"])
+
+    # Save the recipe in the database
+    recipe_id = db.recipes.insert(
         created_by=userID,
-        recipe=response.choices[0].text,
+        recipe=recipe_text,
     )
-    print(response.choices[0].text)
-    return response.choices[0].text
+    # print(recipe_text)
+    # Construct the JSON response
+    recipe_json = {"id": recipe_id, "recipe": recipe_text}
+
+    # print(recipe_json["recipe"])
+
+    # Return the recipe JSON as the response
+    return recipe_json['recipe']
 
 
 @action("getRecipes", method="GET")
@@ -158,6 +204,7 @@ def getRecipes():
     recipes = db(db.recipes.created_by == userID).select(
         db.recipes.id, db.recipes.recipe).as_list()
     # print(recipes)
+
     return dict(recipes=recipes)
 
 
