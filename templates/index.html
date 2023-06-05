@@ -130,7 +130,7 @@
 
           <article v-for="recipe in recipes" class="message is-dark control">
             <div class="message-header">
-              <p>Recipe # {{recipe._idx}}</p>
+              <p>Recipe # {{recipe.title}}</p>
               <button class="button is-link is-rounded is-small is-responsive"
                 @click="toggleRecipe(recipe._idx)">show/hide</button>
               <!-- <button class="delete" aria-label="delete"></button> -->
@@ -140,7 +140,10 @@
               <button v-if="recipe.loading" class="button is-link is-loading">Loading...</button>
               <button v-else class="button is-link" @click="genRecipe(recipe._idx)">Regenerate Recipe!</button>
               <div class="content" style="white-space: pre-line;">
-                {{recipe.content}}
+                Ingredients: {{recipe.ingredients}}
+              </div>
+              <div class="content" style="white-space: pre-line;">
+                Instructions: {{recipe.instructions}}
               </div>
               <button class="button is-danger" @click="deleteRecipe(recipe._idx)">Delete Recipe</button>
             </div>

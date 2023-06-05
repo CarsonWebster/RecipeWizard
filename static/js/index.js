@@ -13,7 +13,7 @@ let init = (app) => {
         ingredientInput: "",    // Holds the data from the pantry input
         pantry: [],             // Holds all items in logged in users pantry
         recipes: [],
-        generated_recipes: [],
+        // generated_recipes: [],
         numPantryRows: 5,       // Number of rows to display in the pantry
         pantryExpanded: false,
         displayTrash: -1,       // Which trashcan to display
@@ -104,22 +104,24 @@ let init = (app) => {
         app.vue.displayTrash = n;
     }
 
-    app.generateRecipeSuggestion = function () {
-        console.log("Generated Recipe Suggestion")
-        axios.get(generateRecipeSuggestion_url).then((response) => {
-          console.log(response.data)
-          // Access the recipe from the response data
-          const recipe = response.data;
-          // Update the recipes array with the new recipe
-          app.vue.generated_recipes.push(recipe);
-        });
-      }
+    // app.generateRecipeSuggestion = function () {
+    //     console.log("Generated Recipe Suggestion")
+    //     axios.get(generateRecipeSuggestion_url).then((response) => {
+    //       console.log(response.data)
+    //       // Access the recipe from the response data
+    //       const recipe = response.data;
+    //       // Update the recipes array with the new recipe
+    //       app.vue.generated_recipes.push(recipe);
+    //     });
+    //   }
 
     app.addRecipe = function () {
         let new_recipe = {}
         new_recipe._idx = app.vue.recipes.length;
         // Push the recipe content to the row
-        new_recipe.content = "New Recipe";
+        new_recipe.title = "New Recipe";
+        new_recipe.ingredients = [];
+        new_recipe.instructions = [];
         new_recipe.show = true;
         new_recipe.loading = false;
         app.vue.recipes.push(new_recipe);
@@ -148,11 +150,12 @@ let init = (app) => {
         console.log("genning recipe:")
         // Toggle recipe loading
         app.vue.recipes[idx].loading = true;
-        app.vue.recipes[idx].content = "Loading...";
+        app.vue.recipes[idx].title = "Loading...";
         axios.get(generateRecipeSuggestion_url).then((response) => {
             console.log(response.data)
-            // Trim new lines from beginning and end of returned string
-            app.vue.recipes[idx].content = response.data.replace(/^\s+|\s+$/g, "");
+            app.vue.recipes[idx].title = response.data.recipe.title;
+            app.vue.recipes[idx].ingredients = response.data.recipe.ingredients;
+            app.vue.recipes[idx].instructions = response.data.recipe.instructions;
             app.vue.recipes[idx].loading = false;
         })
     }
@@ -197,7 +200,7 @@ let init = (app) => {
         togglePantryExpanded: app.togglePantryExpanded,
         setDisplayTrash: app.setDisplayTrash,
 
-        generateRecipeSuggestion: app.generateRecipeSuggestion,
+        // generateRecipeSuggestion: app.generateRecipeSuggestion,
         getRecipes: app.getRecipes,
         addRecipe: app.addRecipe,
         genRecipe: app.genRecipe,
