@@ -150,7 +150,7 @@
             <article v-for="recipe in recipes" class="recipeCard">
               <div class="recipeHeader">
                 <span class="level">
-                  <span class="level-left">Recipe #{{recipe._idx + 1}}</span>
+                  <span class="level-left">Recipe #{{recipe.title}}</span>
                   <span class="icon level-right is-small is-clickable icon-color">
                     <i class="fa fa-star mr-2 favButton" @click="favRecipe(recipe._idx)"></i>
                     <i class="fa fa-trash ml-2" @click="deleteRecipe(recipe._idx)"></i>
@@ -165,7 +165,8 @@
               <div v-if="recipe.show" class="recipeBody">
                 <button v-if="recipe.loading" class="button is-link is-loading">Loading...</button>
                 <!-- <button v-else class="button is-link" @click="genRecipe(recipe._idx)">Regenerate Recipe</button> -->
-                <div class="recipeContent">{{recipe.content}}</div>
+                <div class="recipeContent">{{recipe.ingredients}}</div>
+                <div class="recipeContent">{{recipe.instructions}}</div>
                 <!-- <button class="button is-link is-rounded is-small is-responsive"
                   @click="toggleRecipe(recipe._idx)">show/hide</button> -->
                 <!-- <button class="button is-danger" @click="deleteRecipe(recipe._idx)">Delete Recipe</button> -->

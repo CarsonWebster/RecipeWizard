@@ -40,8 +40,10 @@ db.define_table('pantry',
 
 # Here is a simplified recipes table that can easily hold an AI response as a string
 db.define_table('recipes',
-                Field('user_id', 'reference auth_user'),
-                Field('recipe', 'text'),
+                Field('created_by', 'reference auth_user'),
+                Field('title', 'text'),
+                Field('ingredients', 'list:string'),
+                Field('instructions', 'list:string'),
                 Field('created_at', 'datetime', default=get_time()),
                 )
 

@@ -188,24 +188,27 @@ def generateRecipeSuggestion():
     # Save the recipe in the database
     recipe_id = db.recipes.insert(
         created_by=userID,
-        recipe=recipe_text,
+        title=split_recipe["title"],
+        ingredients=split_recipe["ingredients"],
+        instructions=split_recipe["instructions"],
     )
-    # print(recipe_text)
-    # Construct the JSON response
-    recipe_json = {"id": recipe_id, "recipe": recipe_text}
 
-    # print(recipe_json["recipe"])
-
+    print(recipe_id)
     # Return the recipe JSON as the response
-    return recipe_json['recipe']
+    return dict(recipe={
+        "id": recipe_id,
+        "title": split_recipe["title"],
+        "ingredients": split_recipe["ingredients"],
+        "instructions": split_recipe["instructions"],
+    })
 
 
 @action("getRecipes", method="GET")
 @action.uses(db, auth.user, url_signer)
 def getRecipes():
     userID = auth.current_user.get("id")
-    recipes = db(db.recipes.user_id == userID).select(
-        db.recipes.id, db.recipes.recipe).as_list()
+    recipes = db(db.recipes.created_by == userID).select(
+        db.recipes.id, db.recipes.title, db.recipes.ingredients, db.recipes.instructions).as_list()
     # print(recipes)
 
     return dict(recipes=recipes)
