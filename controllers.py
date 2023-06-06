@@ -109,6 +109,7 @@ defaultPrompt = """
     "Utilize the provided ingredients exclusively to reduce food waste and maximize resourcefulness.",
     "Exclude recipes that contain restricted ingredients based on dietary restrictions. For example, for vegetarian recipes, do not include any animal-based ingredients, including meat like beef, chicken, fish, lamb, etc. Additionally, consider other common dietary restrictions such as vegan, gluten-free, nut allergies, etc. Exclude specific ingredients based on the stated dietary preferences, unless \\"NONE\\" is specified.",
     "Offer a variety of recipe options, including breakfast, lunch, dinner, snacks, and desserts, to cater to different meal preferences.",
+    "Provide a recipe that is not included in the given list of existing recipes.",
     "Optionally, consider recipes that are quick and easy to prepare, perfect for busy individuals or those with limited cooking time.",
     "Optionally, provide recipes with a balanced nutritional profile, considering macronutrients and minimizing sugar content."
   ],
@@ -157,6 +158,14 @@ def split_recipe_string(recipe):
         'instructions': instructions
     }
 
+def getExistingRecipeTitles():
+    userID = auth.current_user.get("id")
+    recipes = db(db.recipes.user_id == userID).select().as_list()
+    titles = []
+    for recipe in recipes:
+        titles.append(recipe["title"])
+    return titles
+
 
 @action("generateRecipeSuggestion", method="GET")
 @action.uses(db, auth.user)
@@ -168,10 +177,11 @@ def generateRecipeSuggestion():
     ingredients = db(db.pantry.userID == userID).select().as_list()
     dietaryPreferences = []  # TODO in future want to pull from URL
     numberOfPeople = 3  # TODO in future want to pull from URL
+    existingRecieps = getExistingRecipeTitles()
 
     response = openai.Completion.create(
         model="text-davinci-003",
-        prompt=f'{json.dumps(prompt_json)} Ingredients: {json.dumps(ingredients)}, Dietary Preferences: {json.dumps(dietaryPreferences)}, Number of People: {numberOfPeople}',
+        prompt=f'{json.dumps(prompt_json)} Ingredients: {json.dumps(ingredients)}, Existing Recipes: {json.dumps(existingRecieps)}, Dietary Preferences: {json.dumps(dietaryPreferences)}, Number of People: {numberOfPeople}',
         max_tokens=200,
         temperature=0.3,
     )
