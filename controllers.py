@@ -160,7 +160,7 @@ def split_recipe_string(recipe):
 
 def getExistingRecipeTitles():
     userID = auth.current_user.get("id")
-    recipes = db(db.recipes.user_id == userID).select().as_list()
+    recipes = db(db.recipes.created_by == userID).select().as_list()
     titles = []
     for recipe in recipes:
         titles.append(recipe["title"])
@@ -174,7 +174,7 @@ def generateRecipeSuggestion():
     openai.api_key = secrets["OPENAI_KEY"]
 
     userID = auth.current_user.get("id")
-    ingredients = db(db.pantry.userID == userID).select().as_list()
+    ingredients = db(db.pantry.user_id == userID).select().as_list()
     dietaryPreferences = []  # TODO in future want to pull from URL
     numberOfPeople = 3  # TODO in future want to pull from URL
     existingRecieps = getExistingRecipeTitles()
