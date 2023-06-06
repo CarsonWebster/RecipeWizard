@@ -200,7 +200,8 @@ input.pantryTextBox:focus{
 }
 
 .recipeContent {
-	white-space: pre-wrap;
+	text-align: left;
+	/* white-space: pre-wrap; */
 }
 
 .favButton:hover {
