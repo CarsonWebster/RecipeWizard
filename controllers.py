@@ -247,21 +247,26 @@ def deleteFav():
 def favRecipe():
     userID = auth.current_user.get("id")
     # recipeID = request.json.get("recipeID")
-    recipe = request.json.get("recipeContent")
+    recipeTitle = request.json.get("recipeTitle")
+    recipeIngredients = request.json.get("recipeIngredients")
+    recipeInstructions = request.json.get("recipeInstructions")
+    print("Request to favorite recipe: ", recipeTitle, recipeIngredients, recipeInstructions)
     # if db(db.favorites.recipe_id == recipeID).select().first():
     #     print("Failed")
     #     return dict(success=False)
     db.favorites.insert(
         user_id=userID,
-        recipe=recipe,
+        title=recipeTitle,
+        ingredients=recipeIngredients,
+        instructions=recipeInstructions,
     )
-    print("Success")
+    # print("Success")
     return dict(success=True)
 
 @action("getFavs", method="GET")
 @action.uses(db, auth.user, url_signer)
-def getRecipes():
+def getFavs():
     userID = auth.current_user.get("id")
     favorites = db(db.favorites.user_id == userID).select().as_list()
-    # print(recipes)
+    print("Returning Favorites", favorites)
     return dict(favorites=favorites)

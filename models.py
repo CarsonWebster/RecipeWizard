@@ -51,7 +51,9 @@ db.define_table('recipes',
 # Querry all the stared recipes for a user by asking for all records where user=user
 db.define_table('favorites',
                 Field('user_id', 'reference auth_user'),
-                Field('recipe', 'text'),
+                Field('title', 'text'),
+                Field('ingredients', 'text'),
+                Field('instructions', 'text'),
                 Field('favorited_at', 'datetime', default=get_time()),
                 )
 

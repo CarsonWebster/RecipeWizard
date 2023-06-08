@@ -136,7 +136,9 @@ let init = (app) => {
                 const addedRecipe = {
                     _idx: recipeIndex,
                     dbID: recipeObj.id,
-                    content: recipeObj.recipe,
+                    title: recipeObj.title,
+                    ingredients: recipeObj.ingredients,
+                    instructions: recipeObj.instructions,
                     show: true,
                     loading: false,
                 };
@@ -205,8 +207,11 @@ let init = (app) => {
     }
 
     app.favRecipe = function (idx) {
-        recipeContent = app.vue.recipes[idx].content;
+        recipeTitle = app.vue.recipes[idx].title;
+        recipeIngredients = app.vue.recipes[idx].ingredients;
+        recipeInstructions = app.vue.recipes[idx].instructions;
         recipeID = app.vue.recipes[idx].dbID;
+        console.log('Favoriting: ', recipeTitle)
         fetch(favRecipe_url, {
             method: "POST",
             headers: {
@@ -214,13 +219,15 @@ let init = (app) => {
             },
             body: JSON.stringify({
                 recipeID: recipeID,
-                recipeContent: recipeContent,
+                recipeTitle: recipeTitle,
+                recipeIngredients: recipeIngredients,
+                recipeInstructions: recipeInstructions,
             }),
         }).then((response) => {
             // if(response.success == true) {
-            //     console.log("added to favs");
+                // console.log("added to favs");
             // } else {
-            //     console.log("already on favs");
+                // console.log("already on favs");
             // }
             // app.vue.favorites.push(recipeID);
             app.getFavs();
@@ -234,7 +241,9 @@ let init = (app) => {
                 const addedFav = {
                     _idx: favIndex,
                     dbID: favObj.id,
-                    content: favObj.recipe,
+                    title: favObj.title,
+                    ingredients: favObj.ingredients,
+                    instructions: favObj.instructions,
                 };
                 favIndex++;
                 return addedFav;
