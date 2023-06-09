@@ -252,15 +252,15 @@ def favRecipe():
     userID = auth.current_user.get("id")
     # recipeID = request.json.get("recipeID")
     recipeTitle = request.json.get("recipeTitle")
+    if recipeTitle is None:
+        recipeTitle = "Unnamed"
     recipeIngredients = request.json.get("recipeIngredients")
-    # recipeIngredients = recipeIngredients.split(',')
+    if recipeIngredients is None:
+        recipeIngredients = "No ingredients provided"
     recipeInstructions = request.json.get("recipeInstructions")
-    # recipeInstructions = recipeInstructions.split(',')
-    print("Request to favorite recipe: ", recipeTitle,
-          recipeIngredients, recipeInstructions)
-    # if db(db.favorites.recipe_id == recipeID).select().first():
-    #     print("Failed")
-    #     return dict(success=False)
+    if recipeInstructions is None:
+        recipeInstructions = "No instructions provided"
+    print("Request to favorite recipe: ", recipeTitle)
     db.favorites.insert(
         user_id=userID,
         title=recipeTitle,
