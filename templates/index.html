@@ -129,6 +129,11 @@
                   <div class="recipeHeader">
                     <span class="level">
                       <span class="level-left">{{fav.title}}</span>
+                      <span class="icon level-right is-small is-clickable">
+                        <i v-if="fav.pinned == false" class="fa fa-thumb-tack mr-2 unPinnedColor"
+                          @click="togglePin(fav._idx)"></i>
+                        <i v-else class="fa fa-thumb-tack mr-2 PinnedColor" @click="togglePin(fav._idx)"></i>
+                      </span>
                       <span class="icon level-right is-small is-clickable unfav-color">
                         <i class="fa fa-star mr-2 unfavButton" @click="deleteFav(fav._idx)"></i>
                       </span>
@@ -210,6 +215,7 @@
   let favRecipe_url = "[[=XML(favRecipe_url)]]";
   let getFavs_url = "[[=XML(getFavs_url)]]";
   let deleteFav_url = "[[=XML(deleteFav_url)]]";
+  let togglePin_url = "[[=XML(togglePin_url)]]";
 </script>
 <script src="js/index.js"></script>
 [[end]]

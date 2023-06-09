@@ -65,6 +65,7 @@ def index():
         favRecipe_url=URL("favRecipe", signer=url_signer),
         getFavs_url=URL("getFavs", signer=url_signer),
         deleteFav_url=URL("deleteFav", signer=url_signer),
+        togglePin_url=URL("togglePin", signer=url_signer),
     )
 
 
@@ -157,6 +158,8 @@ def split_recipe_string(recipe):
         'ingredients': ingredients,
         'instructions': instructions
     }
+
+
 def getExistingRecipeTitles():
     userID = auth.current_user.get("id")
     recipes = db(db.recipes.created_by == userID).select().as_list()
@@ -164,7 +167,6 @@ def getExistingRecipeTitles():
     for recipe in recipes:
         titles.append(recipe["title"])
     return titles
-
 
 
 @action("generateRecipeSuggestion", method="GET")
@@ -277,3 +279,21 @@ def getFavs():
     favorites = db(db.favorites.user_id == userID).select().as_list()
     print("Returning Favorites", favorites)
     return dict(favorites=favorites)
+
+
+@action("togglePin", method="POST")
+@action.uses(db, auth.user, url_signer)
+def togglePin():
+    userID = auth.current_user.get("id")
+    favID = request.json.get("favID")
+    # Grab the favorite recipe row
+    favRecipe = db(db.favorites.id == favID,
+                   db.favorites.user_id == userID).select().first()
+    # If the recipe is already pinned, unpin it
+    if favRecipe.pinned:
+        db(db.favorites.id == favID).update(pinned=False)
+    # Otherwise unpin all other recipes and pin this one
+    else:
+        db(db.favorites.user_id == userID).update(pinned=False)
+        db(db.favorites.id == favID).update(pinned=True)
+    return dict(success=True)

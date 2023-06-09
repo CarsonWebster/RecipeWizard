@@ -212,6 +212,18 @@ input.pantryTextBox:focus{
 	color: rgb(170, 170, 170);
 }
 
+.unPinnedColor {
+  color: rgb(170, 170, 170);
+}
+
+.unPinnedColor:hover {
+  color: red;
+}
+
+.PinnedColor {
+  color: red;
+}
+
 .favoritesContainer {
 	border: 1px solid #d0d0d0;
 	border-radius: 4px;

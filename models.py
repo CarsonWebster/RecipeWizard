@@ -55,6 +55,7 @@ db.define_table('favorites',
                 Field('title', 'text'),
                 Field('ingredients', 'list:string'),
                 Field('instructions', 'list:string'),
+                Field('pinned', 'boolean', default=False),
                 Field('favorited_at', 'datetime', default=get_time()),
                 )
 
