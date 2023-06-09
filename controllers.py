@@ -158,6 +158,7 @@ def split_recipe_string(recipe):
         'instructions': instructions
     }
 
+
 def getExistingRecipeTitles():
     userID = auth.current_user.get("id")
     recipes = db(db.recipes.created_by == userID).select().as_list()
@@ -218,7 +219,8 @@ def generateRecipeSuggestion():
 def getRecipes():
     userID = auth.current_user.get("id")
     recipes = db(db.recipes.created_by == userID).select(
-        db.recipes.id, db.recipes.title, db.recipes.ingredients, db.recipes.instructions).as_list()
+        db.recipes.id, db.recipes.title, db.recipes.ingredients,
+        db.recipes.instructions).as_list()
     # print(recipes)
 
     return dict(recipes=recipes)
@@ -231,7 +233,8 @@ def deleteRecipe():
     # print(f"Deleting recipe with ID {recipeID}")
     status = db(db.recipes.id == recipeID).delete()
     # print("status:", status)
-    return dict(status = status)
+    return dict(status=status)
+
 
 @action("deleteFav", method="POST")
 @action.uses(db, auth.user, url_signer)
@@ -240,7 +243,8 @@ def deleteFav():
     # print(f"Deleting recipe with ID {recipeID}")
     status = db(db.favorites.id == favID).delete()
     # print("status:", status)
-    return dict(status = status)
+    return dict(status=status)
+
 
 @action("favRecipe", method="POST")
 @action.uses(db, auth.user, url_signer)
@@ -249,8 +253,11 @@ def favRecipe():
     # recipeID = request.json.get("recipeID")
     recipeTitle = request.json.get("recipeTitle")
     recipeIngredients = request.json.get("recipeIngredients")
+    # recipeIngredients = recipeIngredients.split(',')
     recipeInstructions = request.json.get("recipeInstructions")
-    print("Request to favorite recipe: ", recipeTitle, recipeIngredients, recipeInstructions)
+    # recipeInstructions = recipeInstructions.split(',')
+    print("Request to favorite recipe: ", recipeTitle,
+          recipeIngredients, recipeInstructions)
     # if db(db.favorites.recipe_id == recipeID).select().first():
     #     print("Failed")
     #     return dict(success=False)
@@ -262,6 +269,7 @@ def favRecipe():
     )
     # print("Success")
     return dict(success=True)
+
 
 @action("getFavs", method="GET")
 @action.uses(db, auth.user, url_signer)
