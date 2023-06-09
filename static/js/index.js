@@ -14,7 +14,7 @@ let init = (app) => {
     pantry: [],             // Holds all items in logged in users pantry
     recipes: [],
     favorites: [],
-    generated_recipes: [],
+    pinned: [],
     numPantryRows: 5,       // Number of rows to display in the pantry
     pantryExpanded: false,
     displayTrash: -1,       // Which trashcan to display
@@ -105,17 +105,6 @@ let init = (app) => {
     app.vue.displayTrash = n;
   }
 
-  // app.generateRecipeSuggestion = function () {
-  //     console.log("Generated Recipe Suggestion")
-  //     axios.get(generateRecipeSuggestion_url).then((response) => {
-  //       console.log(response.data)
-  //       // Access the recipe from the response data
-  //       const recipe = response.data;
-  //       // Update the recipes array with the new recipe
-  //       app.vue.generated_recipes.push(recipe);
-  //     });
-  //   }
-
   app.addRecipe = function() {
     let new_recipe = {}
     new_recipe._idx = app.vue.recipes.length;
@@ -155,7 +144,7 @@ let init = (app) => {
     app.vue.recipes[idx].loading = true;
     app.vue.recipes[idx].title = "Loading...";
     axios.get(generateRecipeSuggestion_url).then((response) => {
-      console.log(response.data)
+      // console.log(response.data)
       app.vue.recipes[idx].title = response.data.recipe.title;
       app.vue.recipes[idx].ingredients = response.data.recipe.ingredients;
       app.vue.recipes[idx].instructions = response.data.recipe.instructions;
@@ -165,8 +154,8 @@ let init = (app) => {
 
   app.deleteRecipe = function(idx) {
     console.log("Deleting db recipe:", app.vue.recipes[idx]);
-    console.log(idx);
-    console.log(app.vue.recipes[idx].dbID);
+    // console.log(idx);
+    // console.log(app.vue.recipes[idx].dbID);
     // console.log(app.vue.recipes[idx]);
     fetch(deleteRecipe_url, {
       method: "POST",
@@ -178,7 +167,7 @@ let init = (app) => {
       }),
     }).then((response) => {
       console.log("Item deleted");
-      console.log(response);
+      // console.log(response);
       // Remove the recipe from the vue list. Does not refresh the index of recipes in vue list
       // app.vue.recipes.splice(idx, 1);
       // OR, refresh the list. This is more expensive, but more consistent
@@ -198,7 +187,7 @@ let init = (app) => {
       }),
     }).then((response) => {
       console.log("Favorite deleted");
-      console.log(response);
+      // console.log(response);
       // Remove the recipe from the vue list. Does not refresh the index of recipes in vue list
       // app.vue.recipes.splice(idx, 1);
       // OR, refresh the list. This is more expensive, but more consistent
@@ -249,7 +238,7 @@ let init = (app) => {
         favIndex++;
         return addedFav;
       });
-      console.log(app.vue.favorites);
+      // console.log(app.vue.favorites);
     });
   }
 
@@ -275,11 +264,31 @@ let init = (app) => {
       }),
     }).then((response) => {
       console.log("Favorite pinned/unpinned");
-      console.log(response);
+      // console.log(response);
       // Refreshing the list
       app.getFavs();
+      app.getPinned();
     });
+  }
 
+  app.getPinned = function() {
+    axios.get(getPinned_url).then(function(r) {
+      let pinnedIndex = 0;
+      app.vue.pinned = r.data.pinned.map((pinnedObj) => {
+        const addedPin = {
+          _idx: pinnedIndex,
+          dbID: pinnedObj.id,
+          title: pinnedObj.title,
+          ingredients: pinnedObj.ingredients,
+          instructions: pinnedObj.instructions,
+          pinned: pinnedObj.pinned,
+          user_name: pinnedObj.user_name
+        };
+        pinnedIndex++;
+        return addedPin;
+      });
+      // console.log(app.vue.pinned);
+    });
   }
 
   // This contains all the methods.
@@ -300,6 +309,7 @@ let init = (app) => {
     favRecipe: app.favRecipe,
     deleteFav: app.deleteFav,
     togglePin: app.togglePin,
+    getPinned: app.getPinned,
   };
 
   // This creates the Vue instance.
@@ -317,6 +327,7 @@ let init = (app) => {
     app.updatePantryRows();
     app.getRecipes();
     app.getFavs();
+    app.getPinned();
   };
 
   // Call to the initializer.
