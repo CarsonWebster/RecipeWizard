@@ -62,6 +62,9 @@ def index():
         generateRecipeSuggestion_url=URL("generateRecipeSuggestion"),
         getRecipes_url=URL("getRecipes", signer=url_signer),
         deleteRecipe_url=URL("deleteRecipe", signer=url_signer),
+        favRecipe_url=URL("favRecipe", signer=url_signer),
+        getFavs_url=URL("getFavs", signer=url_signer),
+        deleteFav_url=URL("deleteFav", signer=url_signer),
     )
 
 
@@ -69,7 +72,7 @@ def index():
 @action.uses(db, auth.user, url_signer)
 def getPantry():
     userID = auth.current_user.get("id")
-    pantry = db(db.pantry.userID == userID).select().as_list()
+    pantry = db(db.pantry.user_id == userID).select().as_list()
     return dict(pantry=pantry)
 
 
@@ -78,13 +81,13 @@ def getPantry():
 def addItemToPantry():
     userID = auth.current_user.get("id")
     item = request.json.get("item")
-    if db((db.pantry.userID == userID) & (db.pantry.item == item)).select().first():
+    if db((db.pantry.user_id == userID) & (db.pantry.item == item)).select().first():
         return dict(success=False)
     db.pantry.insert(
-        userID=userID,
+        user_id=userID,
         item=item,
     )
-    newItem = db((db.pantry.userID == userID) & (
+    newItem = db((db.pantry.user_id == userID) & (
         db.pantry.item == item)).select().first()
     return dict(success=True, newItem=newItem)
 
@@ -106,6 +109,7 @@ defaultPrompt = """
     "Utilize the provided ingredients exclusively to reduce food waste and maximize resourcefulness.",
     "Exclude recipes that contain restricted ingredients based on dietary restrictions. For example, for vegetarian recipes, do not include any animal-based ingredients, including meat like beef, chicken, fish, lamb, etc. Additionally, consider other common dietary restrictions such as vegan, gluten-free, nut allergies, etc. Exclude specific ingredients based on the stated dietary preferences, unless \\"NONE\\" is specified.",
     "Offer a variety of recipe options, including breakfast, lunch, dinner, snacks, and desserts, to cater to different meal preferences.",
+    "Provide a recipe that is not included in the given list of existing recipes.",
     "Optionally, consider recipes that are quick and easy to prepare, perfect for busy individuals or those with limited cooking time.",
     "Optionally, provide recipes with a balanced nutritional profile, considering macronutrients and minimizing sugar content."
   ],
@@ -153,6 +157,14 @@ def split_recipe_string(recipe):
         'ingredients': ingredients,
         'instructions': instructions
     }
+def getExistingRecipeTitles():
+    userID = auth.current_user.get("id")
+    recipes = db(db.recipes.created_by == userID).select().as_list()
+    titles = []
+    for recipe in recipes:
+        titles.append(recipe["title"])
+    return titles
+
 
 
 @action("generateRecipeSuggestion", method="GET")
@@ -162,13 +174,14 @@ def generateRecipeSuggestion():
     openai.api_key = secrets["OPENAI_KEY"]
 
     userID = auth.current_user.get("id")
-    ingredients = db(db.pantry.userID == userID).select().as_list()
+    ingredients = db(db.pantry.user_id == userID).select().as_list()
     dietaryPreferences = []  # TODO in future want to pull from URL
     numberOfPeople = 3  # TODO in future want to pull from URL
+    existingRecieps = getExistingRecipeTitles()
 
     response = openai.Completion.create(
         model="text-davinci-003",
-        prompt=f'{json.dumps(prompt_json)} Ingredients: {json.dumps(ingredients)}, Dietary Preferences: {json.dumps(dietaryPreferences)}, Number of People: {numberOfPeople}',
+        prompt=f'{json.dumps(prompt_json)} Ingredients: {json.dumps(ingredients)}, Existing Recipes: {json.dumps(existingRecieps)}, Dietary Preferences: {json.dumps(dietaryPreferences)}, Number of People: {numberOfPeople}',
         max_tokens=200,
         temperature=0.3,
     )
@@ -205,7 +218,8 @@ def generateRecipeSuggestion():
 def getRecipes():
     userID = auth.current_user.get("id")
     recipes = db(db.recipes.created_by == userID).select(
-        db.recipes.id, db.recipes.title, db.recipes.ingredients, db.recipes.instructions).as_list()
+        db.recipes.id, db.recipes.title, db.recipes.ingredients,
+        db.recipes.instructions).as_list()
     # print(recipes)
 
     return dict(recipes=recipes)
@@ -218,4 +232,48 @@ def deleteRecipe():
     # print(f"Deleting recipe with ID {recipeID}")
     status = db(db.recipes.id == recipeID).delete()
     # print("status:", status)
-    return dict()
+    return dict(status=status)
+
+
+@action("deleteFav", method="POST")
+@action.uses(db, auth.user, url_signer)
+def deleteFav():
+    favID = request.json.get("favID")
+    # print(f"Deleting recipe with ID {recipeID}")
+    status = db(db.favorites.id == favID).delete()
+    # print("status:", status)
+    return dict(status=status)
+
+
+@action("favRecipe", method="POST")
+@action.uses(db, auth.user, url_signer)
+def favRecipe():
+    userID = auth.current_user.get("id")
+    # recipeID = request.json.get("recipeID")
+    recipeTitle = request.json.get("recipeTitle")
+    if recipeTitle is None:
+        recipeTitle = "Unnamed"
+    recipeIngredients = request.json.get("recipeIngredients")
+    if recipeIngredients is None:
+        recipeIngredients = "No ingredients provided"
+    recipeInstructions = request.json.get("recipeInstructions")
+    if recipeInstructions is None:
+        recipeInstructions = "No instructions provided"
+    print("Request to favorite recipe: ", recipeTitle)
+    db.favorites.insert(
+        user_id=userID,
+        title=recipeTitle,
+        ingredients=recipeIngredients,
+        instructions=recipeInstructions,
+    )
+    # print("Success")
+    return dict(success=True)
+
+
+@action("getFavs", method="GET")
+@action.uses(db, auth.user, url_signer)
+def getFavs():
+    userID = auth.current_user.get("id")
+    favorites = db(db.favorites.user_id == userID).select().as_list()
+    print("Returning Favorites", favorites)
+    return dict(favorites=favorites)
