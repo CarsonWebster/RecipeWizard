@@ -157,8 +157,6 @@ def split_recipe_string(recipe):
         'ingredients': ingredients,
         'instructions': instructions
     }
-
-
 def getExistingRecipeTitles():
     userID = auth.current_user.get("id")
     recipes = db(db.recipes.created_by == userID).select().as_list()
@@ -166,6 +164,7 @@ def getExistingRecipeTitles():
     for recipe in recipes:
         titles.append(recipe["title"])
     return titles
+
 
 
 @action("generateRecipeSuggestion", method="GET")
