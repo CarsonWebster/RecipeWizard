@@ -6,6 +6,7 @@
 	font-size: 24px;
 	margin: 24px;
 	line-height: 16px;
+	padding: 16px;
 }
 
 .pantryBox {
@@ -38,7 +39,7 @@ input.pantryTextBox:focus{
 }
 
 .addButton {
-	background-color: rgb(96, 228, 178);
+	background-color: #95FFDF;
 	width: 12%;
 	border-top-left-radius: 0;
 	border-top-right-radius: 4px;
@@ -57,7 +58,7 @@ input.pantryTextBox:focus{
 }
 
 .addButton:hover {
-	background-color: rgb(81, 218, 163);
+	background-color: #87f3d2;
 	color: rgb(140, 140, 140);
 }
 
@@ -92,26 +93,166 @@ input.pantryTextBox:focus{
 	background-color: rgb(250, 250, 250);
 }
 
-.minimizeButton {
+.expandButton {
 	background-color: #f7f7f7;
 	border: 1px solid #d0d0d0;
-	border-top-left-radius: 16px;
-	border-top-right-radius: 16px;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
 	margin: auto;
-	width: 26px;
+	width: 65px;
 	text-align: center;
 	height: 20px;
-	z-index: 5;
 	position: relative;
 	bottom: 20px;
-	line-height: 18px;
+	/* line-height: 18px; */
+}
+
+.expandButton:hover {
+	background-color: #f1f1f1;
+}
+
+.collapseButton {
+	background-color: #f7f7f7;
+	border: 1px solid #d0d0d0;
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	margin: auto;
+	width: 65px;
+	text-align: center;
+	height: 20px;
+	position: relative;
+	bottom: 1px;
+}
+
+.collapseButton:hover {
+	background-color: #f1f1f1;
 }
 
 .icon-color {
 	color: rgb(170, 170, 170);
 }
 
+.unfav-color {
+	color: gold
+}
+
+
+.expand-text{
+	color: rgb(120, 120, 120);
+	text-align: center;
+	font-size: 14px;
+	position: relative;
+	bottom: 3px;
+}
+
+.chevron-icon {
+	color: rgb(120, 120, 120);
+	text-align: center;
+	font-size: 10px;
+	position: relative;
+	bottom: 4.5px;
+}
+
 .top-8 {
 	position: relative;
 	top: 8px;
+}
+
+.item-text {
+	outline:none;
+}
+
+.recipesColumn {
+	/* border: 1px solid #d0d0d0; */
+}
+
+.generateButton {
+	/* width: 70%; */
+	/* margin: auto; */
+	background-color: #95FFDF;
+	border-radius: 4px;
+	border: 1px solid #d0d0d0;
+	text-align: center;
+	font-size: 24px;
+	padding: 10px;
+}
+
+.generateButton:hover {
+	background-color: #87f3d2;
+}
+
+.recipeCard {
+	margin-top: 24px;
+	border: 1px solid#d0d0d0;
+	border-radius: 4px;
+}
+
+.recipeHeader {
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	border-bottom: 1px solid #d0d0d0;
+	font-size: 18px;
+	padding: 16px;
+}
+
+.recipeBody {
+	padding: 16px;
+}
+
+.recipeContent {
+	text-align: left;
+	/* white-space: pre-wrap; */
+}
+
+.favButton:hover {
+	color: gold;
+}
+
+.unfavButton:hover {
+	color: rgb(170, 170, 170);
+}
+
+.unPinnedColor {
+  color: rgb(170, 170, 170);
+}
+
+.unPinnedColor:hover {
+  color: red;
+}
+
+.PinnedColor {
+  color: red;
+}
+
+.favoritesContainer {
+	border: 1px solid #d0d0d0;
+	border-radius: 4px;
+	padding: 24px;
+	overflow-x: auto; /* horizontal scrolling for favs */
+}
+
+.favoritesText {
+	font-size: 24px;
+	margin-left: 16px;
+	margin-top: 8px;
+	margin-bottom: 16px;
+}
+
+.favorites {
+	display: flex;
+	justify-content: space-between;
+}
+
+.favoriteCard {
+	border-radius: 4px;
+	border: 1px solid #d0d0d0;
+	width: 275px;
+	overflow-y: auto;
+	margin: 10px;
+	/* max-height: 300px; */
+}
+
+.emptyFavs {
+	color: rgb(130, 130, 130);
+	margin-left: 24px;
 }

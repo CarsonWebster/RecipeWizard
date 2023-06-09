@@ -4,3 +4,4 @@ databases/*
 !databases/README.md
 .env
 .service
+.DS_Store
