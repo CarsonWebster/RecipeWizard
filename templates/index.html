@@ -16,7 +16,7 @@
         <!-- Pantry column -->
         <div class="column is-8">
           <!-- Whole pantry element -->
-          <section>
+          <section :class="{ mb1: (numPantryRows > 5),  mb5: (numPantryRows <= 5) }">
             <div class="pantryBox">
               <div class="columns m-0">
                 <div class="column is-6 p-0">
@@ -120,7 +120,8 @@
               </div>
             </div>
           </section>
-          <section class="favoritesContainer">
+          <!-- Favorites Section -->
+          <section class="favoritesContainer mb-5">
             <header class="favoritesText">Favorites</header>
             <div class="columns">
               <div class="favorites">

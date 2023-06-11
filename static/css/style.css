@@ -256,3 +256,11 @@ input.pantryTextBox:focus{
 	color: rgb(130, 130, 130);
 	margin-left: 24px;
 }
+
+.mb1 {
+	margin-bottom: 4px;
+}
+
+.mb5 {
+	margin-bottom: 1.5rem;
+}
