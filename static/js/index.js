@@ -20,6 +20,8 @@ let init = (app) => {
     numPantryRows: 5,       // Number of rows to display in the pantry
     pantryExpanded: false,
     displayTrash: -1,       // Which trashcan to display
+    recipePopup: false,
+    selectedRecipe: null,
   };
 
   app.enumerate = (a) => {
@@ -301,6 +303,19 @@ let init = (app) => {
     app.vue.pinnedRecipesExpanded =!app.vue.pinnedRecipesExpanded;
   }
 
+  // mode determines if clicked recipe is in 0-generated, 1-favorites, 2-pinned
+  app.selectRecipePopup = function(mode, idx) {
+    app.vue.recipePopup = true;
+    if(mode == 0) {
+      app.vue.selectedRecipe = app.vue.recipes[idx];
+    } else if(mode == 1) {
+      app.vue.selectedRecipe = app.vue.favorites[idx];
+    } else if(mode == 2) {
+      app.vue.selectedRecipe = app.vue.pinned[idx];
+    }
+    console.log(app.vue.selectedRecipe);
+  }
+
   // This contains all the methods.
   app.methods = {
     // Complete as you see fit.
@@ -326,6 +341,7 @@ let init = (app) => {
     deleteFav: app.deleteFav,
     togglePin: app.togglePin,
     getPinned: app.getPinned,
+    selectRecipePopup: app.selectRecipePopup,
   };
 
   // This creates the Vue instance.
