@@ -156,8 +156,8 @@
           </section>          
 
           <!-- Pinned Recipes Section -->
-          <section class="favoritesContainer">
-            <header class="favoritesText">Pinned Recipes</header>
+          <section class="favoritesContainer" :class="{ collapsed: !pinnedRecipesExpanded }">
+            <header class="favoritesText" @click="togglePinnedRecipesExpanded">Pinned Recipes</header>
             <div class="columns">
               <div class="favorites">
                 <div v-if="pinned.length == 0" class="emptyFavs">No users have a recipe pinned D:</div>

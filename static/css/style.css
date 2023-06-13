@@ -162,10 +162,6 @@ input.pantryTextBox:focus{
 	outline:none;
 }
 
-.recipesColumn {
-	/* border: 1px solid #d0d0d0; */
-}
-
 .generateButton {
 	/* width: 70%; */
 	/* margin: auto; */
@@ -242,7 +238,7 @@ input.pantryTextBox:focus{
 	font-size: 24px;
 	margin-left: 16px;
 	margin-top: 8px;
-	margin-bottom: 16px;ss
+	margin-bottom: 16px;
 }
 
 .favorites {
