@@ -120,12 +120,13 @@
               </div>
             </div>
           </section>
+          <!-- Favorites section -->
           <section class="favoritesContainer mb-5" :class="{ collapsed: !favoritesExpanded }">
             <header class="favoritesText" @click="toggleFavoritesExpanded">Favorites</header>
             <div class="columns">
               <div class="favorites">
                 <div v-if="favorites.length == 0" class="emptyFavs">Add some favorites...</div>
-                <article v-for="fav in favorites" class="favoriteCard">
+                <article v-for="fav in favorites" class="favoriteCard" @click="selectRecipePopup(1, fav._idx)">
                   <div class="recipeHeader">
                     <span class="level">
                       <span class="level-left">{{fav.title}}
@@ -160,7 +161,7 @@
             <div class="columns">
               <div class="favorites">
                 <div v-if="pinned.length == 0" class="emptyFavs">No users have a recipe pinned D:</div>
-                <article v-for="pinnedRecipe in pinned" class="favoriteCard">
+                <article v-for="pinnedRecipe in pinned" class="favoriteCard" @click="selectRecipePopup(2, pinnedRecipe._idx)">
                   <div class="recipeHeader">
                     <span class="level">
                       <span class="level-left">{{pinnedRecipe.title}}</span>
@@ -194,7 +195,7 @@
           <div class="recipesColumn">
             <article class="is-clickable generateButton" @click="addRecipe">Generate New Recipe</article>
 
-            <article v-for="recipe in recipes" class="recipeCard">
+            <article v-for="recipe in recipes" class="recipeCard" @click="selectRecipePopup(0, recipe._idx)">
               <div class="recipeHeader">
                 <span class="level">
                   <span class="level-left">Recipe:</span>
@@ -228,6 +229,24 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <div v-if="recipePopup" class="recipePopupContainer">
+    <div class="popupBackground" @click="recipePopup = false"></div>
+    <section class="popupRecipeCard">
+      <div class="recipeHeader">
+        <span class="">{{selectedRecipe.title}}</span>
+      </div>
+      <div class="recipeBody">
+        <div class="recipeContent">Ingredients:</div>
+        <div v-for="ingredient in selectedRecipe.ingredients" class="recipeContent">{{ingredient}}</div>
+        <div class="recipeContent">
+          <br>
+          Instructions:
+        </div>
+        <div v-for="instructions in selectedRecipe.instructions" class="recipeContent">{{instructions}}</div>
+      </div>
+    </section>
   </div>
 
   <!-- <button class="button is-warning" @click="generateRecipeSuggestion">Test AI Completion python function</button> -->
