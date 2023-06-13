@@ -128,15 +128,18 @@
                 <article v-for="fav in favorites" class="favoriteCard">
                   <div class="recipeHeader">
                     <span class="level">
-                      <span class="level-left">{{fav.title}}</span>
-                      <span class="icon level-right is-small is-clickable">
-                        <i v-if="fav.pinned == false" class="fa fa-thumb-tack mr-2 unPinnedColor"
-                          @click="togglePin(fav._idx)"></i>
-                        <i v-else class="fa fa-thumb-tack mr-2 PinnedColor" @click="togglePin(fav._idx)"></i>
+                      
+                      <span class="level-left">{{fav.title}}
+                        <span class="icon level-left is-small is-clickable">
+                          <i v-if="fav.pinned == false" class="fa fa-thumb-tack mr-2 unPinnedColor"
+                            @click="togglePin(fav._idx)"></i>
+                          <i v-else class="fa fa-thumb-tack mr-2 PinnedColor" @click="togglePin(fav._idx)"></i>
+                        </span>
+                        <span class="icon level-left is-small is-clickable unfav-color">
+                          <i class="fa fa-star mr-2 unfavButton" @click="deleteFav(fav._idx)"></i>
+                        </span>
                       </span>
-                      <span class="icon level-right is-small is-clickable unfav-color">
-                        <i class="fa fa-star mr-2 unfavButton" @click="deleteFav(fav._idx)"></i>
-                      </span>
+                
                     </span>
                   </div>
                   <div class="recipeBody">
