@@ -180,11 +180,11 @@ def generateRecipeSuggestion():
     ingredients = db(db.pantry.user_id == userID).select().as_list()
     dietaryPreferences = []  # TODO in future want to pull from URL
     numberOfPeople = 3  # TODO in future want to pull from URL
-    existingRecieps = getExistingRecipeTitles()
+    existingRecipes = getExistingRecipeTitles()
 
     response = openai.Completion.create(
         model="text-davinci-003",
-        prompt=f'{json.dumps(prompt_json)} Ingredients: {json.dumps(ingredients)}, Existing Recipes: {json.dumps(existingRecieps)}, Dietary Preferences: {json.dumps(dietaryPreferences)}, Number of People: {numberOfPeople}',
+        prompt=f'{json.dumps(prompt_json)} Ingredients: {json.dumps(ingredients)}, Existing Recipes: {json.dumps(existingRecipes)}, Dietary Preferences: {json.dumps(dietaryPreferences)}, Number of People: {numberOfPeople}',
         max_tokens=200,
         temperature=0.3,
     )
