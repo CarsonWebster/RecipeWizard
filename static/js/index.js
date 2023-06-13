@@ -14,6 +14,8 @@ let init = (app) => {
     pantry: [],             // Holds all items in logged in users pantry
     recipes: [],
     favorites: [],
+    favoritesExpanded: true,
+    pinnedRecipesExpanded: true,
     pinned: [],
     numPantryRows: 5,       // Number of rows to display in the pantry
     pantryExpanded: false,
@@ -291,9 +293,23 @@ let init = (app) => {
     });
   }
 
+  app.toggleFavoritesExpanded = function() {
+    app.vue.favoritesExpanded = !app.vue.favoritesExpanded;
+  }
+
+  app.togglePinnedRecipesExpanded = function() {
+    app.vue.pinnedRecipesExpanded =!app.vue.pinnedRecipesExpanded;
+  }
+
   // This contains all the methods.
   app.methods = {
     // Complete as you see fit.
+    toggleFavoritesExpanded() {
+        app.vue.favoritesExpanded = !app.vue.favoritesExpanded;
+      },
+    togglePinnedRecipesExpanded() {
+        app.vue.pinnedRecipesExpanded =!app.vue.pinnedRecipesExpanded;
+    },
     addItemToPantry: app.addItemToPantry,
     clearIngredientInput: app.clearIngredientInput,
     deleteItem: app.deleteItem,

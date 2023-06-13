@@ -162,10 +162,6 @@ input.pantryTextBox:focus{
 	outline:none;
 }
 
-.recipesColumn {
-	/* border: 1px solid #d0d0d0; */
-}
-
 .generateButton {
 	/* width: 70%; */
 	/* margin: auto; */
@@ -229,7 +225,14 @@ input.pantryTextBox:focus{
 	border-radius: 4px;
 	padding: 24px;
 	overflow-x: auto; /* horizontal scrolling for favs */
-}
+	max-height: 1000px; /* Set initial height to fit content */
+	transition: max-height 0.25s ease-out; /* animation */
+  }
+  
+  .favoritesContainer.collapsed {
+	max-height: 80px; /* Collapsed height */
+	transition: max-height 0.25s ease-in; /* animation */
+  }  
 
 .favoritesText {
 	font-size: 24px;
