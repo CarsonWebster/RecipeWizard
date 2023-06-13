@@ -120,15 +120,15 @@
               </div>
             </div>
           </section>
-          <section class="favoritesContainer">
-            <header class="favoritesText">Favorites</header>
+
+          <section class="favoritesContainer" :class="{ collapsed: !favoritesExpanded }">
+            <header class="favoritesText" @click="toggleFavoritesExpanded">Favorites</header>
             <div class="columns">
               <div class="favorites">
                 <div v-if="favorites.length == 0" class="emptyFavs">Add some favorites...</div>
                 <article v-for="fav in favorites" class="favoriteCard">
                   <div class="recipeHeader">
                     <span class="level">
-                      
                       <span class="level-left">{{fav.title}}
                         <span class="icon level-left is-small is-clickable">
                           <i v-if="fav.pinned == false" class="fa fa-thumb-tack mr-2 unPinnedColor"
@@ -139,7 +139,6 @@
                           <i class="fa fa-star mr-2 unfavButton" @click="deleteFav(fav._idx)"></i>
                         </span>
                       </span>
-                
                     </span>
                   </div>
                   <div class="recipeBody">
@@ -150,12 +149,11 @@
                       Instructions:
                     </div>
                     <div v-for="instructions in fav.instructions" class="recipeContent">{{instructions}}</div>
-
                   </div>
                 </article>
               </div>
             </div>
-          </section>
+          </section>          
 
           <!-- Pinned Recipes Section -->
           <section class="favoritesContainer">
