@@ -106,36 +106,71 @@ let init = (app) => {
     this.ingredientInput = "";
   };
 
-  app.toggleRecipe = function(row_idx) {
-    app.vue.recipes[row_idx].show = !app.vue.recipes[row_idx].show
-  }
+  app.toggleRecipe = function (row_idx) {
+    app.vue.recipes[row_idx].show = !app.vue.recipes[row_idx].show;
+  };
 
-  app.testCompletion = function() {
-    console.log("Testing completion")
+  app.testCompletion = function () {
+    console.log("Testing completion");
     axios.get(testCompletion_url).then((data) => {
-      console.log(data)
-    })
-  }
-  app.togglePin = function(idx) {
-    fetch(togglePin_url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        favID: app.vue.favorites[idx].dbID,
-      }),
-    }).then((response) => {
-      console.log("Favorite pinned/unpinned");
-      // console.log(response);
-      // Refreshing the list
-      app.getFavs();
-      app.getPinned();
+      console.log(data);
     });
-  }
+  };
 
-  app.getPinned = function() {
-    axios.get(getPinned_url).then(function(r) {
+  app.togglePin = function (idx) {
+    fetch(getPinned_url)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data.pinned);
+        let imageUrl;
+
+        if (!data.pinned.length) {
+          imageUrl = window.prompt("Please enter the URL of the image:");
+        } else {
+            imageUrl = data.pinned.imageUrl;
+        }
+
+        console.log(imageUrl);
+        fetch(togglePin_url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            favID: app.vue.favorites[idx].dbID,
+            imageUrl: imageUrl,
+          }),
+        })
+          .then((response) => {
+            console.log("Favorite pinned/unpinned");
+            if (response.ok) {
+              // console.log(response.json());
+              return response.json();
+            } else {
+              throw new Error("Toggle pin request failed");
+            }
+          })
+          .then((data) => {
+            console.log("Toggle pin response:", data);
+            // Fetch the updated pinned recipe from the server
+            fetch(getPinned_url)
+              .then((response) => response.json())
+              .then((data) => {
+                app.vue.pinned = data.pinned;
+                console.log("New pinned:", data.pinned);
+              })
+              .catch((error) => {
+                console.error("Error fetching pinned recipes:", error);
+              });
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      });
+  };
+
+  app.getPinned = function () {
+    axios.get(getPinned_url).then(function (r) {
       let pinnedIndex = 0;
       app.vue.pinned = r.data.pinned.map((pinnedObj) => {
         const addedPin = {
@@ -146,21 +181,22 @@ let init = (app) => {
           instructions: pinnedObj.instructions,
           pinned: pinnedObj.pinned,
           user_name: pinnedObj.user_name,
-  };
+          imageUrl: pinnedObj.imageUrl,
+        };
         pinnedIndex++;
         return addedPin;
       });
       // console.log(app.vue.pinned);
     });
-  }
+  };
 
-  app.toggleFavoritesExpanded = function() {
+  app.toggleFavoritesExpanded = function () {
     app.vue.favoritesExpanded = !app.vue.favoritesExpanded;
-  }
+  };
 
-  app.togglePinnedRecipesExpanded = function() {
-    app.vue.pinnedRecipesExpanded =!app.vue.pinnedRecipesExpanded;
-  }
+  app.togglePinnedRecipesExpanded = function () {
+    app.vue.pinnedRecipesExpanded = !app.vue.pinnedRecipesExpanded;
+  };
 
   app.togglePantryExpanded = function () {
     if (app.vue.numPantryRows > 5) {

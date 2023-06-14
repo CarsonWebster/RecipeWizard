@@ -281,23 +281,41 @@ def getFavs():
 def togglePin():
     userID = auth.current_user.get("id")
     favID = request.json.get("favID")
+    imageUrl = request.json.get("imageUrl")
+
     # Grab the favorite recipe row
-    favRecipe = db(db.favorites.id == favID,
-                   db.favorites.user_id == userID).select().first()
-    # If the recipe is already pinned, unpin it
-    if favRecipe.pinned:
-        db(db.favorites.id == favID).update(pinned=False)
-    # Otherwise unpin all other recipe
+    favRecipe = db((db.favorites.id == favID) & (db.favorites.user_id == userID)).select().first()
+    
+    # Update the imageUrl property of the favorite recipe
+    if favRecipe:
+        newPinnedStatus = not favRecipe.pinned
+        favRecipe.update_record(imageUrl=imageUrl)
+        print("Database update successful")
+        favRecipe.imageUrl = imageUrl  # Update the imageUrl property in the object
+        favRecipe.pinned = newPinnedStatus
+        favRecipe.update_record(pinned=newPinnedStatus)
+        db.commit()  # Commit the changes to the database
+        # print(favRecipe)
     else:
-        db(db.favorites.user_id == userID).update(pinned=False)
-        db(db.favorites.id == favID).update(pinned=True)
-    return dict(success=True)
+        print("Favorite recipe not found")
+    
+    return dict(success=True, pinnedRecipe=favRecipe)
+
+
+
+
+
+
+
 
 
 @action("getPinned", method="GET")
 @action.uses(db, auth.user, url_signer)
 def getPinned():
     pinned_recipes = db(db.favorites.pinned == True).select()
+    # print("db.favorites", db(db.favorites).select())
+    # print("len(pinned_recipes)", len(pinned_recipes))
+    # print("db.favorites.pinned", db(db.favorites.pinned).select())
     # Replace the userID's with the user's first name
     pinned_list = []
     for recipe in pinned_recipes:
@@ -312,6 +330,11 @@ def getPinned():
             "pinned": recipe.pinned,
             "user_name": first_name,
         }
+        if recipe.pinned:
+            recipe_dict["imageUrl"] = recipe.imageUrl
+            recipe.update_record(imageUrl=recipe.imageUrl)
+            db.commit()
+            # print("THIS SHIT IS PINNED")
         pinned_list.append(recipe_dict)
     # print("Returning Pinned", pinned_list)
     return dict(pinned=pinned_list)
