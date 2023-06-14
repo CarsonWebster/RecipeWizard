@@ -223,7 +223,11 @@ input.pantryTextBox:focus{
 }
 
 .PinnedColor {
-  color: red;
+	color: red;
+}
+
+.PinnedColor:hover {
+	color: rgb(170, 170, 170);
 }
 
 .favoritesContainer {
