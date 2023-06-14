@@ -164,8 +164,8 @@
                 <div v-if="pinned.length == 0" class="emptyFavs">No users have a recipe pinned D:</div>
 
                 <article v-for="(pinnedRecipe, idx) in pinned" :key="pinnedRecipe._idx" class="favoriteCard">
-                  <p>Recipe Title: {{ pinnedRecipe.title }}</p>
-                  <p>Image URL: {{ pinnedRecipe.imageUrl }}</p>
+                  <!-- <p>Recipe Title: {{ pinnedRecipe.title }}</p>
+                  <p>Image URL: {{ pinnedRecipe.imageUrl }}</p> -->
                   <div class="recipeHeader">
                     <span class="level">
                       <span class="level-left">{{ pinnedRecipe.title }}</span>

@@ -104,7 +104,6 @@ input.pantryTextBox:focus{
 	height: 20px;
 	position: relative;
 	bottom: 20px;
-	/* line-height: 18px; */
 }
 
 .expandButton:hover {
@@ -163,8 +162,6 @@ input.pantryTextBox:focus{
 }
 
 .generateButton {
-	/* width: 70%; */
-	/* margin: auto; */
 	background-color: #95FFDF;
 	border-radius: 4px;
 	border: 1px solid #d0d0d0;
@@ -200,7 +197,6 @@ input.pantryTextBox:focus{
 .recipeContent {
 	text-align: left;
 	margin-bottom: 4px; /* Adjust as needed */
-	/* white-space: pre-wrap; */
 }
 
 .favButton:hover {
@@ -263,11 +259,10 @@ input.pantryTextBox:focus{
 	overflow-y: auto;
 	margin: 10px;
 	position: relative;
-	/* max-height: 300px; */
 }
 
 .recipeImageContainer {
-	height: 200px; /* Adjust the height to your desired size */
+	height: 200px;
 	overflow: hidden;
 	position: relative;
 }
@@ -286,6 +281,5 @@ input.pantryTextBox:focus{
 
 .emptyFavs {
 	color: rgb(130, 130, 130);
-	/* margin-left: 24px; */
 	margin-left: 0; /* Remove the left margin to center the message */
 }

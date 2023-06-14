@@ -59,9 +59,4 @@ db.define_table('favorites',
                 Field('favorited_at', 'datetime', default=get_time()),
                 Field('imageUrl', 'string', requires=IS_URL()),
                 )
-# FOR THE COMMIT MESSAGE LATER
-# Add a new field for storing the image reference in the "favorites" table
-# In the code above, we added the image_reference field of type string to the "favorites" table. 
-# The field is set to require a valid URL for storing the image reference.
-
 db.commit()
