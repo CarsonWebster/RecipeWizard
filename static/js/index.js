@@ -315,12 +315,6 @@ let init = (app) => {
         recipeInstructions: recipeInstructions,
       }),
     }).then((response) => {
-      // if(response.success == true) {
-      // console.log("added to favs");
-      // } else {
-      // console.log("already on favs");
-      // }
-      // app.vue.favorites.push(recipeID);
       app.getFavs();
     });
   };
