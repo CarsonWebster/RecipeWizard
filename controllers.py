@@ -27,20 +27,13 @@ Warning: Fixtures MUST be declared with @action.uses({fixtures}) else your app w
 
 import re
 import json
-import os
 from py4web.utils.form import Form, FormStyleBulma
 from py4web import action, request, abort, redirect, URL, HTTP
 from yatl.helpers import A
 from .common import (
     db,
     session,
-    T,
-    cache,
     auth,
-    logger,
-    authenticated,
-    unauthenticated,
-    flash,
 )
 
 from datetime import datetime
@@ -272,7 +265,6 @@ def deleteFav():
 @action.uses(db, auth.user, url_signer)
 def favRecipe():
     userID = auth.current_user.get("id")
-    # recipeID = request.json.get("recipeID")
     recipeTitle = request.json.get("recipeTitle")
     if recipeTitle is None:
         recipeTitle = "Unnamed"
@@ -341,34 +333,3 @@ def getPinned():
         pinned_list.append(recipe_dict)
     # print("Returning Pinned", pinned_list)
     return dict(pinned=pinned_list)
-
-
-# we define a new action upload_image that handles the image upload request.
-# It expects a POST request with a file parameter named "image" and a JSON payload containing the favorite ID (favorite_id).
-# The uploaded image file is saved to a directory named "uploads" with a unique filename.
-
-# Make sure to create a directory named "uploads" in your application's root directory to store the uploaded images.
-@action("upload", method="POST")
-@action.uses(db, auth.user, url_signer)
-def upload_image():
-    # Get the uploaded image file
-    image_file = request.files.get("image")
-    print("\n\n\nImage File:", image_file)
-    if image_file is None:
-        return dict(success=False)
-
-    # Generate a unique filename
-    filename = os.path.join("uploads", image_file.filename)
-
-    # Save the image file to the server
-    image_file.save(filename)
-
-    # Update the image reference in the database
-    favorite_id = request.json.get("favorite_id")
-    db(db.favorites.id == favorite_id).update(image_reference=filename)
-
-    # Create the response dictionary
-    response = dict(success=True)
-
-    return response
-

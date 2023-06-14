@@ -18,7 +18,6 @@ let init = (app) => {
     numPantryRows: 5, // Number of rows to display in the pantry
     pantryExpanded: false,
     displayTrash: -1, // Which trashcan to display
-    imageBaseURL: "/uploads/", // holds the base URL or file path to the uploaded images.
   };
 
   app.enumerate = (a) => {
@@ -146,7 +145,7 @@ let init = (app) => {
           ingredients: pinnedObj.ingredients,
           instructions: pinnedObj.instructions,
           pinned: pinnedObj.pinned,
-          user_name: pinnedObj.user_name
+          user_name: pinnedObj.user_name,
   };
         pinnedIndex++;
         return addedPin;
@@ -171,29 +170,6 @@ let init = (app) => {
 
   app.setDisplayTrash = function (n) {
     app.vue.displayTrash = n;
-  };
-
-  // Inside the uploadImage method, use the uploadImageURL variable
-  const uploadImageURL = "http://127.0.0.1:8000/RecipeWizard/upload"; // Define the upload URL variable to be changed if hosted vs locally
-  app.uploadImage = function (event) {
-    const file = event.target.files[0];
-    const formData = new FormData();
-    formData.append("image", file);
-  
-    axios
-      .post(uploadImageURL, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        console.log("Image uploaded successfully:", response.data);
-        // Perform any necessary actions after the image upload
-      })
-      .catch((error) => {
-        console.error("Error uploading image:", error);
-        // Handle the error appropriately
-      });
   };
 
   app.addRecipe = function () {
@@ -229,7 +205,7 @@ let init = (app) => {
   };
 
   app.genRecipe = function (idx) {
-    console.log("genning recipe:");
+    console.log("generating recipe:");
     // Toggle recipe loading
     app.vue.recipes[idx].loading = true;
     app.vue.recipes[idx].title = "Loading...";
@@ -329,8 +305,6 @@ let init = (app) => {
           imageUrl: app.data.imageBaseURL + favObj.image_reference,
         };
         favIndex++;
-        console.log("\n\nimage path");
-        console.log(addedFav.imageUrl)
         return addedFav;
       });
     });
@@ -349,8 +323,6 @@ let init = (app) => {
     deleteItem: app.deleteItem,
     togglePantryExpanded: app.togglePantryExpanded,
     setDisplayTrash: app.setDisplayTrash,
-    uploadImage: app.uploadImage,
-
     getRecipes: app.getRecipes,
     addRecipe: app.addRecipe,
     genRecipe: app.genRecipe,

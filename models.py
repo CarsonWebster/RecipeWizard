@@ -57,7 +57,6 @@ db.define_table('favorites',
                 Field('instructions', 'list:string'),
                 Field('pinned', 'boolean', default=False),
                 Field('favorited_at', 'datetime', default=get_time()),
-                Field('image_reference', 'string', requires=IS_URL) # Add a new field for storing the image reference in the "favorites" table
                 )
 # FOR THE COMMIT MESSAGE LATER
 # Add a new field for storing the image reference in the "favorites" table

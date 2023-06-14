@@ -151,13 +151,6 @@
                     </div>
                     <div v-for="instructions in fav.instructions" class="recipeContent">{{instructions}}</div>
                   </div>
-                  <!-- Add the image upload functionality here -->
-                  <div class="imageUpload">
-                    <input type="file" accept="image/*" @change="uploadImage($event, fav)">
-                    <div v-if="fav.image_reference" class="uploadedImage">
-                      <img :src="fav.image_reference" alt="Uploaded Image">
-                    </div>
-                  </div>
                 </article>
               </div>
             </div>
@@ -186,7 +179,10 @@
                     <div v-for="instructions in pinnedRecipe.instructions" class="recipeContent">{{instructions}}</div>
                   </div>
                   <div class="recipeImageContainer">
-                    <img :src="pinnedRecipe.imageUrl" alt="Recipe Image" class="recipeImage" />
+
+                    <!-- TODO CHANGE THIS TO CUSTOM IMAGE PER RECIPE RATHER THAN HARDCODED URL -->
+                    <img src="https://media-cldnry.s-nbcnews.com/image/upload/rockcms/2022-03/plant-based-food-mc-220323-02-273c7b.jpg" class="recipeImage" />
+                  
                   </div>
                 </article>
               </div>
