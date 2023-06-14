@@ -206,6 +206,14 @@ input.pantryTextBox:focus{
 	/* white-space: pre-wrap; */
 }
 
+.trashButton {
+	color: rgb(170, 170, 170);
+}
+
+.trashButton:hover {
+	color: red;
+}
+
 .favButton:hover {
 	color: gold;
 }
