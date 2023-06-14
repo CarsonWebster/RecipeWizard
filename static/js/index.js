@@ -319,9 +319,11 @@ let init = (app) => {
 
   app.updateScrolling = function() {
     if (app.vue.recipePopup) {
-      document.body.classList.add('noScroll');
+      document.body.style.overflow = 'hidden';
+      console.log("here?");
     } else {
-      document.body.classList.remove('noScroll');
+      document.body.style.overflow = 'auto';
+      console.log("here2?");
     }
   };
 
@@ -370,7 +372,7 @@ let init = (app) => {
     app.getRecipes();
     app.getFavs();
     app.getPinned();
-    app.vue.$watch('recipePopup', app.vue.updateBodyScroll);
+    app.vue.$watch('recipePopup', app.vue.updateScrolling);
   };
 
   // Call to the initializer.
