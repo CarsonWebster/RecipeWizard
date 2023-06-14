@@ -8,7 +8,9 @@ let init = (app) => {
   // This is the Vue data.
   app.data = {
     // Complete as you see fit.
+    user_id: "",
     ingredientInput: "", // Holds the data from the pantry input
+    pinnedRecipeImageURLInput: "",
     pantry: [], // Holds all items in logged in users pantry
     recipes: [],
     favorites: [],
@@ -18,6 +20,7 @@ let init = (app) => {
     numPantryRows: 5, // Number of rows to display in the pantry
     pantryExpanded: false,
     displayTrash: -1, // Which trashcan to display
+    editingPinnedImage: false,
   };
 
   app.enumerate = (a) => {
@@ -29,19 +32,19 @@ let init = (app) => {
     return a;
   };
 
-  app.updatePantryRows = function () {
+  app.updatePantryRows = function() {
     app.vue.numPantryRows = Math.max(5, Math.ceil(app.vue.pantry.length / 2));
   };
 
-  app.getPantry = function () {
-    axios.get(getPantry_url).then(function (r) {
+  app.getPantry = function() {
+    axios.get(getPantry_url).then(function(r) {
       app.vue.pantry = r.data.pantry;
       app.updatePantryRows();
       // console.log(app.vue.pantry)
     });
   };
 
-  app.addItemToPantry = function () {
+  app.addItemToPantry = function() {
     // adds item from ingredientInput box to database with userID
     if (this.pantry.length > 100) {
       // add alert/pop up to tell user here
@@ -82,7 +85,7 @@ let init = (app) => {
       });
   };
 
-  app.deleteItem = function (itemID) {
+  app.deleteItem = function(itemID) {
     // removes item from pantry and db
     fetch(deleteItem_url, {
       method: "POST",
@@ -101,76 +104,42 @@ let init = (app) => {
       });
   };
 
-  app.clearIngredientInput = function () {
+  app.clearIngredientInput = function() {
     // Clear the search query
     this.ingredientInput = "";
   };
 
-  app.toggleRecipe = function (row_idx) {
+  app.toggleRecipe = function(row_idx) {
     app.vue.recipes[row_idx].show = !app.vue.recipes[row_idx].show;
   };
 
-  app.testCompletion = function () {
+  app.testCompletion = function() {
     console.log("Testing completion");
     axios.get(testCompletion_url).then((data) => {
       console.log(data);
     });
   };
 
-  app.togglePin = function (idx) {
-    fetch(getPinned_url)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data.pinned);
-        let imageUrl;
-
-        if (!data.pinned.length) {
-          imageUrl = window.prompt("Please enter the URL of the image:");
-        } else {
-            imageUrl = data.pinned.imageUrl;
-        }
-
-        console.log(imageUrl);
-        fetch(togglePin_url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            favID: app.vue.favorites[idx].dbID,
-            imageUrl: imageUrl,
-          }),
-        })
-          .then((response) => {
-            console.log("Favorite pinned/unpinned");
-            if (response.ok) {
-              // console.log(response.json());
-              return response.json();
-            } else {
-              throw new Error("Toggle pin request failed");
-            }
-          })
-          .then((data) => {
-            console.log("Toggle pin response:", data);
-            // Fetch the updated pinned recipe from the server
-            fetch(getPinned_url)
-              .then((response) => response.json())
-              .then((data) => {
-                app.vue.pinned = data.pinned;
-                console.log("New pinned:", data.pinned);
-              })
-              .catch((error) => {
-                console.error("Error fetching pinned recipes:", error);
-              });
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      });
+  app.togglePin = function(idx) {
+    fetch(togglePin_url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        favID: app.vue.favorites[idx].dbID,
+      }),
+    }).then((response) => {
+      console.log("Favorite pinned/unpinned");
+      // console.log(response);
+      // Refreshing the list
+      app.getFavs();
+      app.getPinned();
+    });
   };
 
-  app.getPinned = function () {
-    axios.get(getPinned_url).then(function (r) {
+  app.getPinned = function() {
+    axios.get(getPinned_url).then(function(r) {
       let pinnedIndex = 0;
       app.vue.pinned = r.data.pinned.map((pinnedObj) => {
         const addedPin = {
@@ -181,6 +150,7 @@ let init = (app) => {
           instructions: pinnedObj.instructions,
           pinned: pinnedObj.pinned,
           user_name: pinnedObj.user_name,
+          user_id: pinnedObj.user_id,
           imageUrl: pinnedObj.imageUrl,
         };
         pinnedIndex++;
@@ -190,25 +160,75 @@ let init = (app) => {
     });
   };
 
-  app.toggleFavoritesExpanded = function () {
+  app.toggleFavoritesExpanded = function() {
     app.vue.favoritesExpanded = !app.vue.favoritesExpanded;
   };
 
-  app.togglePinnedRecipesExpanded = function () {
+  app.togglePinnedRecipesExpanded = function() {
     app.vue.pinnedRecipesExpanded = !app.vue.pinnedRecipesExpanded;
   };
 
-  app.togglePantryExpanded = function () {
+  app.togglePantryExpanded = function() {
     if (app.vue.numPantryRows > 5) {
       app.vue.pantryExpanded = !app.vue.pantryExpanded;
     }
   };
 
-  app.setDisplayTrash = function (n) {
+  app.setDisplayTrash = function(n) {
     app.vue.displayTrash = n;
   };
 
-  app.addRecipe = function () {
+  app.toggleEditingPinnedImage = function() {
+    app.vue.editingPinnedImage = !app.vue.editingPinnedImage;
+  };
+
+  app.getUserID = function() {
+    axios.get(getUserID_url).then((r) => {
+      // console.log("Got user ID", r.data.userID);
+      app.vue.user_id = r.data.userID;
+    });
+  };
+
+  app.setPinnedImageURL = function(idx) {
+    // console.log("Setting pinned image URL with fav index:", idx);
+    // console.log("And DB index:", app.vue.favorites[idx].dbID);
+    fetch(setPinnedRecipeImageURL_url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        favID: app.vue.favorites[idx].dbID,
+        imageUrl: app.vue.pinnedRecipeImageURLInput,
+      }),
+    }).then((response) => {
+      // console.log("Pinned image URL set");
+      // console.log(response);
+      app.getPinned();
+    });
+    app.vue.editingPinnedImage = false;
+  };
+
+  app.deletePinnedImageURL = function(idx) {
+    // console.log("Deleting pinned image URL");
+    fetch(setPinnedRecipeImageURL_url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        favID: app.vue.favorites[idx].dbID,
+        imageUrl: "",
+      }),
+    }).then((response) => {
+      // console.log("Pinned image URL set");
+      // console.log(response);
+      app.getPinned();
+    });
+    app.vue.editingPinnedImage = false;
+  };
+
+  app.addRecipe = function() {
     let new_recipe = {};
     new_recipe._idx = app.vue.recipes.length;
     // Push the recipe content to the row
@@ -221,7 +241,7 @@ let init = (app) => {
     app.genRecipe(new_recipe._idx);
   };
 
-  app.getRecipes = function () {
+  app.getRecipes = function() {
     axios.get(getRecipes_url).then((r) => {
       let recipeIndex = 0;
       app.vue.recipes = r.data.recipes.map((recipeObj) => {
@@ -240,7 +260,7 @@ let init = (app) => {
     });
   };
 
-  app.genRecipe = function (idx) {
+  app.genRecipe = function(idx) {
     console.log("generating recipe:");
     // Toggle recipe loading
     app.vue.recipes[idx].loading = true;
@@ -254,7 +274,7 @@ let init = (app) => {
     });
   };
 
-  app.deleteRecipe = function (idx) {
+  app.deleteRecipe = function(idx) {
     console.log("Deleting db recipe:", app.vue.recipes[idx]);
     // console.log(idx);
     // console.log(app.vue.recipes[idx].dbID);
@@ -277,7 +297,7 @@ let init = (app) => {
     });
   };
 
-  app.deleteFav = function (idx) {
+  app.deleteFav = function(idx) {
     console.log("Deleting db favorite:", app.vue.favorites[idx]);
     fetch(deleteFav_url, {
       method: "POST",
@@ -297,7 +317,7 @@ let init = (app) => {
     });
   };
 
-  app.favRecipe = function (idx) {
+  app.favRecipe = function(idx) {
     recipeTitle = app.vue.recipes[idx].title;
     recipeIngredients = app.vue.recipes[idx].ingredients;
     recipeInstructions = app.vue.recipes[idx].instructions;
@@ -321,8 +341,8 @@ let init = (app) => {
 
   //   modify the favorites array to include the complete image URLs or file paths for each favorite recipe.
   //   You can concatenate the imageBaseURL with the image_reference field from the response.
-  app.getFavs = function () {
-    axios.get(getFavs_url).then(function (r) {
+  app.getFavs = function() {
+    axios.get(getFavs_url).then(function(r) {
       let favIndex = 0;
       app.vue.favorites = r.data.favorites.map((favObj) => {
         const addedFav = {
@@ -332,7 +352,7 @@ let init = (app) => {
           ingredients: favObj.ingredients,
           instructions: favObj.instructions,
           pinned: favObj.pinned,
-          imageUrl: app.data.imageBaseURL + favObj.image_reference,
+          imageUrl: favObj.imageUrl,
         };
         favIndex++;
         return addedFav;
@@ -362,6 +382,10 @@ let init = (app) => {
     deleteFav: app.deleteFav,
     togglePin: app.togglePin,
     getPinned: app.getPinned,
+    toggleEditingPinnedImage: app.toggleEditingPinnedImage,
+    getUserID: app.getUserID,
+    setPinnedImageURL: app.setPinnedImageURL,
+    deletePinnedImageURL: app.deletePinnedImageURL,
   };
 
   // This creates the Vue instance.
@@ -375,6 +399,7 @@ let init = (app) => {
   app.init = () => {
     // Put here any initialization code.
     // Typically this is a server GET call to load the data.
+    app.getUserID();
     app.getPantry();
     app.updatePantryRows();
     app.getRecipes();

@@ -167,11 +167,34 @@
                   <!-- <p>Recipe Title: {{ pinnedRecipe.title }}</p>
                   <p>Image URL: {{ pinnedRecipe.imageUrl }}</p> -->
                   <div class="recipeHeader">
-                    <span class="level">
-                      <span class="level-left">{{ pinnedRecipe.title }}</span>
-                    </span>
-                    <span class="level-right">User: {{ pinnedRecipe.user_name }}</span>
+                    <span class="">{{ pinnedRecipe.title }}</span>
+                    <div class="level">
+                      <div class="level-left">
+                        <span v-if="user_id == pinnedRecipe.user_id" class="level-item icon is-small is-clickable">
+                          <i class="fa fa-image" @click="toggleEditingPinnedImage "></i>
+                        </span>
+                      </div>
+                      <div class="level-right">
+                        <span class="level-item">User: {{ pinnedRecipe.user_name }}</span>
+                      </div>
+                    </div>
+                    <div v-if="editingPinnedImage" class="level">
+                      <input v-model="pinnedRecipeImageURLInput" class="input" type="text" placeholder="Image URL">
+                    </div>
+                    <div v-if="editingPinnedImage" class="level">
+                      <span class="level-left">
+                        <button class="button is-small is-danger" @click="deletePinnedImageURL(idx)">Delete Image
+                          URL</button>
+                      </span>
+                      <span class="level-right">
+                        <button class="button is-small is-info" @click="setPinnedImageURL(idx)">Set Image URL</button>
+                      </span>
+                    </div>
                   </div>
+                  <div v-if="pinnedRecipe.imageUrl" class="recipeImageContainer">
+                    <img :src="pinnedRecipe.imageUrl" class="recipeImage" />
+                  </div>
+                  <!-- <span v-else>No image set</span> -->
                   <div class="recipeBody">
                     <div class="recipeContent">Ingredients:</div>
                     <div v-for="ingredient in pinnedRecipe.ingredients" class="recipeContent">{{ ingredient }}</div>
@@ -179,16 +202,13 @@
                       <br>
                       Instructions:
                     </div>
-                    <div v-for="instructions in pinnedRecipe.instructions" class="recipeContent">{{ instructions }}</div>
-                  </div>
-                  <div class="recipeImageContainer">
-                    <img v-if="pinnedRecipe.imageUrl" :src="pinnedRecipe.imageUrl" class="recipeImage" />
-                    <span v-else>No image available</span>
+                    <div v-for="instructions in pinnedRecipe.instructions" class="recipeContent">{{ instructions }}
+                    </div>
                   </div>
                 </article>
               </div>
             </div>
-        </section>
+          </section>
 
 
         </div>
@@ -243,6 +263,8 @@
   let deleteFav_url = "[[=XML(deleteFav_url)]]";
   let togglePin_url = "[[=XML(togglePin_url)]]";
   let getPinned_url = "[[=XML(getPinned_url)]]";
+  let getUserID_url = "[[=XML(getUserID_url)]]";
+  let setPinnedRecipeImageURL_url = "[[=XML(setPinnedRecipeImageURL_url)]]";
 </script>
 <script src="js/index.js"></script>
 [[end]]

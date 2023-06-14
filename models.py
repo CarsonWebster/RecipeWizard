@@ -7,6 +7,7 @@ from .common import db, Field, auth
 from pydal.validators import *
 from pydal.validators import IS_URL
 
+
 def get_user_email():
     return auth.current_user.get('email') if auth.current_user else None
 
