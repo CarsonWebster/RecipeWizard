@@ -121,6 +121,7 @@
             </div>
           </section>
 
+          <!-- Favorites Section -->
           <section class="favoritesContainer" :class="{ collapsed: !favoritesExpanded }">
             <header class="favoritesText" @click="toggleFavoritesExpanded">Favorites</header>
             <div class="columns">
@@ -150,10 +151,17 @@
                     </div>
                     <div v-for="instructions in fav.instructions" class="recipeContent">{{instructions}}</div>
                   </div>
+                  <!-- Add the image upload functionality here -->
+                  <div class="imageUpload">
+                    <input type="file" accept="image/*" @change="uploadImage($event, fav)">
+                    <div v-if="fav.image_reference" class="uploadedImage">
+                      <img :src="fav.image_reference" alt="Uploaded Image">
+                    </div>
+                  </div>
                 </article>
               </div>
             </div>
-          </section>          
+          </section>
 
           <!-- Pinned Recipes Section -->
           <section class="favoritesContainer" :class="{ collapsed: !pinnedRecipesExpanded }">
@@ -161,18 +169,10 @@
             <div class="columns">
               <div class="favorites">
                 <div v-if="pinned.length == 0" class="emptyFavs">No users have a recipe pinned D:</div>
-                <article v-for="pinnedRecipe in pinned" class="favoriteCard">
+                <article v-for="pinnedRecipe in pinned" :key="pinnedRecipe._idx" class="favoriteCard">
                   <div class="recipeHeader">
                     <span class="level">
                       <span class="level-left">{{pinnedRecipe.title}}</span>
-                      <!-- <span class="icon level-right is-small is-clickable"> -->
-                      <!-- <i v-if="fav.pinned == false" class="fa fa-thumb-tack mr-2 unPinnedColor" -->
-                      <!-- @click="togglePin(fav._idx)"></i> -->
-                      <!-- <i v-else class="fa fa-thumb-tack mr-2 PinnedColor" @click="togglePin(fav._idx)"></i> -->
-                      <!-- </span> -->
-                      <!-- <span class="icon level-right is-small is-clickable unfav-color"> -->
-                      <!-- <i class="fa fa-star mr-2 unfavButton" @click="deleteFav(fav._idx)"></i> -->
-                      <!-- </span> -->
                     </span>
                     <span class="level-right">User: {{pinnedRecipe.user_name}}</span>
                   </div>
@@ -185,10 +185,14 @@
                     </div>
                     <div v-for="instructions in pinnedRecipe.instructions" class="recipeContent">{{instructions}}</div>
                   </div>
+                  <div class="recipeImageContainer">
+                    <img :src="pinnedRecipe.imageUrl" alt="Recipe Image" class="recipeImage" />
+                  </div>
                 </article>
               </div>
             </div>
           </section>
+
         </div>
         <!-- Recipes Column -->
         <div class="column is-4">
@@ -205,14 +209,9 @@
                   </span>
                 </span>
                 {{recipe.title}}
-                <!-- <p>Recipe #{{recipe._idx + 1}}</p> -->
-                <!-- <button class="button is-link is-rounded is-small is-responsive"
-                  @click="toggleRecipe(recipe._idx)">show/hide</button> -->
-                <!-- <button class="delete" aria-label="delete"></button> -->
               </div>
               <div v-if="recipe.show" class="recipeBody">
                 <button v-if="recipe.loading" class="button is-link is-loading">Loading...</button>
-                <!-- <button v-else class="button is-link" @click="genRecipe(recipe._idx)">Regenerate Recipe</button> -->
                 <div v-if="!recipe.loading" class="recipeContent">Ingredients:</div>
                 <div v-for="ingredient in recipe.ingredients" class="recipeContent">{{ingredient}}</div>
                 <div v-if="!recipe.loading" class="recipeContent">
@@ -220,9 +219,7 @@
                   Instructions:
                 </div>
                 <div v-for="instructions in recipe.instructions" class="recipeContent">{{instructions}}</div>
-                <!-- <button class="button is-link is-rounded is-small is-responsive"
-                  @click="toggleRecipe(recipe._idx)">show/hide</button> -->
-                <!-- <button class="button is-danger" @click="deleteRecipe(recipe._idx)">Delete Recipe</button> -->
+
               </div>
             </article>
           </div>
@@ -230,8 +227,6 @@
       </div>
     </div>
   </div>
-
-  <!-- <button class="button is-warning" @click="generateRecipeSuggestion">Test AI Completion python function</button> -->
 
   <!-- section end div -->
 </div>

@@ -1,6 +1,6 @@
 """
 This file defines actions, i.e. functions the URLs are mapped into
-The @action(path) decorator exposed the function at URL:
+The @action(path) decorator exposes the function at URL:
 
     http://127.0.0.1:8000/{app_name}/{path}
 
@@ -18,15 +18,18 @@ The path follows the bottlepy syntax.
 @action.uses(session)         indicates that the action uses the session
 @action.uses(db)              indicates that the action uses the db
 @action.uses(T)               indicates that the action uses the i18n & pluralization
-@action.uses(auth.user)       indicates that the action requires a logged in user
+@action.uses(auth.user)       indicates that the action requires a logged-in user
 @action.uses(auth)            indicates that the action requires the auth object
 
-session, db, T, auth, and tempates are examples of Fixtures.
+session, db, T, auth, and templates are examples of Fixtures.
 Warning: Fixtures MUST be declared with @action.uses({fixtures}) else your app will result in undefined behavior
 """
+
 import re
 import json
-from py4web import action, request, abort, redirect, URL
+import os
+from py4web.utils.form import Form, FormStyleBulma
+from py4web import action, request, abort, redirect, URL, HTTP
 from yatl.helpers import A
 from .common import (
     db,
@@ -39,6 +42,7 @@ from .common import (
     unauthenticated,
     flash,
 )
+
 from datetime import datetime
 from py4web.utils.url_signer import URLSigner
 from .models import get_user_email
@@ -51,10 +55,11 @@ secrets = dotenv_values("apps/RecipeWizard/.env")
 url_signer = URLSigner(session)
 
 
+
 @action("index")
 @action.uses("index.html", db, auth.user, url_signer)
 def index():
-    return dict(
+    response = dict(
         # COMPLETE: return here any signed URLs you need.
         getPantry_url=URL("getPantry", signer=url_signer),
         addItemToPantry_url=URL("addItemToPantry", signer=url_signer),
@@ -67,15 +72,23 @@ def index():
         deleteFav_url=URL("deleteFav", signer=url_signer),
         togglePin_url=URL("togglePin", signer=url_signer),
         getPinned_url=URL("getPinned", signer=url_signer),
+        uploadImage_url=URL("upload_image", signer=url_signer),
+        headers = {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token"
+    },
     )
+    return response
+
+
 
 
 @action("getPantry", method="GET")
 @action.uses(db, auth.user, url_signer)
 def getPantry():
-    userID = auth.current_user.get("id")
-    pantry = db(db.pantry.user_id == userID).select().as_list()
-    return dict(pantry=pantry)
+    response = dict(pantry=db(db.pantry.user_id == auth.current_user.get("id")).select().as_list())
+    return response
 
 
 @action("addItemToPantry", method="POST")
@@ -84,16 +97,23 @@ def addItemToPantry():
     userID = auth.current_user.get("id")
     item = request.json.get("item")
     if db((db.pantry.user_id == userID) & (db.pantry.item == item)).select().first():
-        return dict(success=False)
-    db.pantry.insert(
-        user_id=userID,
-        item=item,
-    )
-    newItem = db((db.pantry.user_id == userID) & (
-        db.pantry.item == item)).select().first()
-    return dict(success=True, newItem=newItem)
+        response = dict(success=False)
+    else:
+        db.pantry.insert(user_id=userID, item=item)
+        newItem = db((db.pantry.user_id == userID) & (db.pantry.item == item)).select().first()
+        response = dict(success=True, newItem=newItem)
+    return response
 
-# probably need to add security to this
+
+# Add other actions here with the CORS headers
+
+@action("(.*)", method=["OPTIONS", "GET", "POST", "PUT", "DELETE"])
+@action.uses(session, db)
+def api(path=None, *args, **kwargs):
+    if path is None:
+        path = ""
+    response = HTTP(200, "")
+    return response
 
 
 @action("deleteItem", method="POST")
@@ -321,3 +341,34 @@ def getPinned():
         pinned_list.append(recipe_dict)
     # print("Returning Pinned", pinned_list)
     return dict(pinned=pinned_list)
+
+
+# we define a new action upload_image that handles the image upload request.
+# It expects a POST request with a file parameter named "image" and a JSON payload containing the favorite ID (favorite_id).
+# The uploaded image file is saved to a directory named "uploads" with a unique filename.
+
+# Make sure to create a directory named "uploads" in your application's root directory to store the uploaded images.
+@action("upload", method="POST")
+@action.uses(db, auth.user, url_signer)
+def upload_image():
+    # Get the uploaded image file
+    image_file = request.files.get("image")
+    print("\n\n\nImage File:", image_file)
+    if image_file is None:
+        return dict(success=False)
+
+    # Generate a unique filename
+    filename = os.path.join("uploads", image_file.filename)
+
+    # Save the image file to the server
+    image_file.save(filename)
+
+    # Update the image reference in the database
+    favorite_id = request.json.get("favorite_id")
+    db(db.favorites.id == favorite_id).update(image_reference=filename)
+
+    # Create the response dictionary
+    response = dict(success=True)
+
+    return response
+

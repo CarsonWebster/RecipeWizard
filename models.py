@@ -5,7 +5,7 @@ This file defines the database models
 import datetime
 from .common import db, Field, auth
 from pydal.validators import *
-
+from pydal.validators import IS_URL
 
 def get_user_email():
     return auth.current_user.get('email') if auth.current_user else None
@@ -57,6 +57,11 @@ db.define_table('favorites',
                 Field('instructions', 'list:string'),
                 Field('pinned', 'boolean', default=False),
                 Field('favorited_at', 'datetime', default=get_time()),
+                Field('image_reference', 'string', requires=IS_URL) # Add a new field for storing the image reference in the "favorites" table
                 )
+# FOR THE COMMIT MESSAGE LATER
+# Add a new field for storing the image reference in the "favorites" table
+# In the code above, we added the image_reference field of type string to the "favorites" table. 
+# The field is set to require a valid URL for storing the image reference.
 
 db.commit()
