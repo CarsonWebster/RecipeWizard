@@ -329,6 +329,8 @@ let init = (app) => {
           imageUrl: app.data.imageBaseURL + favObj.image_reference,
         };
         favIndex++;
+        console.log("\n\nimage path");
+        console.log(addedFav.imageUrl)
         return addedFav;
       });
     });
