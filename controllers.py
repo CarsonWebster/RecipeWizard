@@ -66,15 +66,8 @@ def index():
         togglePin_url=URL("togglePin", signer=url_signer),
         getPinned_url=URL("getPinned", signer=url_signer),
         uploadImage_url=URL("upload_image", signer=url_signer),
-        headers = {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-        "Access-Control-Allow-Headers": "Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token"
-    },
     )
     return response
-
-
 
 
 @action("getPantry", method="GET")
