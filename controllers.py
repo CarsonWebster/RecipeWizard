@@ -98,17 +98,6 @@ def addItemToPantry():
     return response
 
 
-# Add other actions here with the CORS headers
-
-@action("(.*)", method=["OPTIONS", "GET", "POST", "PUT", "DELETE"])
-@action.uses(session, db)
-def api(path=None, *args, **kwargs):
-    if path is None:
-        path = ""
-    response = HTTP(200, "")
-    return response
-
-
 @action("deleteItem", method="POST")
 @action.uses(db, auth.user, url_signer)
 def deleteItem():
