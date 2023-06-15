@@ -150,7 +150,7 @@
                 </article>
               </div>
             </div>
-          </section>          
+          </section>
 
           <!-- Pinned Recipes Section -->
           <section class="favoritesContainer" :class="{ collapsed: !pinnedRecipesExpanded }">
@@ -158,34 +158,58 @@
             <div class="columns">
               <div class="favorites">
                 <div v-if="pinned.length == 0" class="emptyFavs">No users have a recipe pinned D:</div>
-                <article v-for="pinnedRecipe in pinned" class="favoriteCard">
+                <article v-for="(pinnedRecipe, idx) in pinned" :key="pinnedRecipe._idx" class="favoriteCard">
+                  <!-- <p>Recipe Title: {{ pinnedRecipe.title }}</p>
+                  <p>Image URL: {{ pinnedRecipe.imageUrl }}</p> -->
                   <div class="recipeHeader">
-                    <span class="level">
-                      <span class="level-left popupButton" @click="selectRecipePopup(2, pinnedRecipe._idx)">{{pinnedRecipe.title}}</span>
-                      <!-- <span class="icon level-right is-small is-clickable"> -->
-                      <!-- <i v-if="fav.pinned == false" class="fa fa-thumb-tack mr-2 unPinnedColor" -->
-                      <!-- @click="togglePin(fav._idx)"></i> -->
-                      <!-- <i v-else class="fa fa-thumb-tack mr-2 PinnedColor" @click="togglePin(fav._idx)"></i> -->
-                      <!-- </span> -->
-                      <!-- <span class="icon level-right is-small is-clickable unfav-color"> -->
-                      <!-- <i class="fa fa-star mr-2 unfavButton" @click="deleteFav(fav._idx)"></i> -->
-                      <!-- </span> -->
-                      <span class="level-right">{{pinnedRecipe.user_name}}</span>
-                    </span>
-                  </div>
-                  <div class="recipeBody">
-                    <div class="recipeContent">Ingredients:</div>
-                    <div v-for="ingredient in pinnedRecipe.ingredients" class="recipeContent">{{ingredient}}</div>
-                    <div class="recipeContent">
-                      <br>
-                      Instructions:
+                    <span class="popupButton" @click="selectRecipePopup(2, pinnedRecipe._idx)">{{ pinnedRecipe.title }}</span>
+                    <div class="level">
+                      <div class="level-left">
+                        <span v-if="user_id == pinnedRecipe.user_id" class="level-item icon is-small is-clickable">
+                          <i class="fa fa-image" @click="toggleEditingPinnedImage "></i>
+                        </span>
+                      </div>
+                      <div class="level-right">
+                        <span class="level-item">User: {{ pinnedRecipe.user_name }}</span>
+                      </div>
                     </div>
-                    <div v-for="instructions in pinnedRecipe.instructions" class="recipeContent">{{instructions}}</div>
-                  </div>
+                    <div v-if="editingPinnedImage && user_id == pinnedRecipe.user_id">
+                      <div class="level">
+                        <input v-model="pinnedRecipeImageURLInput" class="input" type="text" placeholder="Image URL">
+                      </div>
+                      <div class="level">
+                        <span class="level-left">
+                          <button class="button is-small is-danger"
+                            @click="deletePinnedImageURL(pinnedRecipe.dbID)">Delete Image
+                            URL</button>
+                        </span>
+                        <span class="level-right">
+                          <button class="button is-small is-info" @click="setPinnedImageURL(pinnedRecipe.dbID)">Set
+                            Image
+                            URL</button>
+                        </span>
+                      </div>
+                    </div>
+                    <div v-if="pinnedRecipe.imageUrl" class="recipeImageContainer">
+                      <img :src="pinnedRecipe.imageUrl" class="recipeImage" />
+                    </div>
+                    <!-- <span v-else>No image set</span> -->
+                    <div class="recipeBody">
+                      <div class="recipeContent">Ingredients:</div>
+                      <div v-for="ingredient in pinnedRecipe.ingredients" class="recipeContent">{{ ingredient }}</div>
+                      <div class="recipeContent">
+                        <br>
+                        Instructions:
+                      </div>
+                      <div v-for="instructions in pinnedRecipe.instructions" class="recipeContent">{{ instructions }}
+                      </div>
+                    </div>
                 </article>
               </div>
             </div>
           </section>
+
+
         </div>
         <!-- Recipes Column -->
         <div class="column is-4">
@@ -209,7 +233,6 @@
               </div>
               <div v-if="recipe.show" class="recipeBody">
                 <button v-if="recipe.loading" class="button is-link is-loading">Loading...</button>
-                <!-- <button v-else class="button is-link" @click="genRecipe(recipe._idx)">Regenerate Recipe</button> -->
                 <div v-if="!recipe.loading" class="recipeContent">Ingredients:</div>
                 <div v-for="ingredient in recipe.ingredients" class="recipeContent">{{ingredient}}</div>
                 <div v-if="!recipe.loading" class="recipeContent">
@@ -217,9 +240,7 @@
                   Instructions:
                 </div>
                 <div v-for="instructions in recipe.instructions" class="recipeContent">{{instructions}}</div>
-                <!-- <button class="button is-link is-rounded is-small is-responsive"
-                  @click="toggleRecipe(recipe._idx)">show/hide</button> -->
-                <!-- <button class="button is-danger" @click="deleteRecipe(recipe._idx)">Delete Recipe</button> -->
+
               </div>
             </article>
           </div>
@@ -251,7 +272,6 @@
   <!-- section end div -->
 </div>
 
-
 [[block page_scripts]]
 <!-- Loads the index-specific js for Vue -->
 <script>
@@ -266,6 +286,8 @@
   let deleteFav_url = "[[=XML(deleteFav_url)]]";
   let togglePin_url = "[[=XML(togglePin_url)]]";
   let getPinned_url = "[[=XML(getPinned_url)]]";
+  let getUserID_url = "[[=XML(getUserID_url)]]";
+  let setPinnedRecipeImageURL_url = "[[=XML(setPinnedRecipeImageURL_url)]]";
 </script>
 <script src="js/index.js"></script>
 [[end]]
