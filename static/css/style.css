@@ -104,7 +104,6 @@ input.pantryTextBox:focus{
 	height: 20px;
 	position: relative;
 	bottom: 20px;
-	/* line-height: 18px; */
 }
 
 .expandButton:hover {
@@ -163,8 +162,6 @@ input.pantryTextBox:focus{
 }
 
 .generateButton {
-	/* width: 70%; */
-	/* margin: auto; */
 	background-color: #95FFDF;
 	border-radius: 4px;
 	border: 1px solid #d0d0d0;
@@ -185,25 +182,33 @@ input.pantryTextBox:focus{
 	overflow-y: auto;
 }
 
-.recipeCard:hover {
-	cursor: pointer;
-}
-
 .recipeHeader {
 	border-top-left-radius: 4px;
 	border-top-right-radius: 4px;
 	border-bottom: 1px solid #d0d0d0;
 	font-size: 18px;
 	padding: 16px;
+	overflow-wrap: break-word;
+
+	z-index: 1; /* Ensure the header appears above the image overlay */
 }
 
 .recipeBody {
 	padding: 16px;
+	padding-top: 8px; /* Adjust as needed */
 }
 
 .recipeContent {
 	text-align: left;
-	/* white-space: pre-wrap; */
+	margin-bottom: 4px; /* Adjust as needed */
+}
+
+.trashButton {
+	color: rgb(170, 170, 170);
+}
+
+.trashButton:hover {
+	color: red;
 }
 
 .favButton:hover {
@@ -223,7 +228,11 @@ input.pantryTextBox:focus{
 }
 
 .PinnedColor {
-  color: red;
+	color: red;
+}
+
+.PinnedColor:hover {
+	color: rgb(170, 170, 170);
 }
 
 .favoritesContainer {
@@ -235,10 +244,10 @@ input.pantryTextBox:focus{
 	transition: max-height 0.25s ease-out; /* animation */
   }
   
-  .favoritesContainer.collapsed {
+.favoritesContainer.collapsed {
 	max-height: 80px; /* Collapsed height */
 	transition: max-height 0.25s ease-in; /* animation */
-  }  
+}  
 
 .favoritesText {
 	font-size: 24px;
@@ -249,12 +258,20 @@ input.pantryTextBox:focus{
 
 .favoritesText:hover {
 	cursor: pointer;
+	background-color: #f0f0f0;
 }
 
 .favorites {
 	display: flex;
 	justify-content: space-between;
 }
+
+.recipeImage {
+	width: 100%;
+	height: auto;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+  }
 
 .favoriteCard {
 	border-radius: 4px;
@@ -263,26 +280,54 @@ input.pantryTextBox:focus{
 	max-height: 250px;
 	overflow-y: auto;
 	margin: 10px;
+  
+	overflow-wrap: break-word;
+	text-align: left;
 	/* max-height: 300px; */
+	position: relative;
 }
 
-.favoriteCard:hover {
-	cursor: pointer;
+.recipeImageContainer {
+	height: 200px;
+	overflow: hidden;
+	position: relative;
 }
 
-.emptyFavs {
-	color: rgb(130, 130, 130);
-	margin-left: 24px;
-}
-
-.recipePopupContainer {
+.recipeImageContainer::after {
+	content: "";
+	display: block;
 	position: absolute;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
-	margin: 0;
-	padding: 0;
+	background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.8));
+	pointer-events: none;
+}
+
+.popupButton:hover {
+	cursor: pointer;
+	background-color: #f0f0f0;
+}
+
+.emptyFavs {
+	color: rgb(130, 130, 130);
+	margin-left: 0; /* Remove the left margin to center the message */
+}
+
+.recipePopupContainer {
+    position: fixed; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    z-index: 9999;
+    /* background-color: rgba(0, 0, 0, 0.5); Black overlay with some transparency */
 }
 
 .popupBackground {
@@ -294,13 +339,13 @@ input.pantryTextBox:focus{
 }
 
 .popupRecipeCard {
-	margin: auto;
-	width: 50%;
-	border-radius: 4px;
-	border: 1px solid #d0d0d0;
-	background-color: white;
-	position: relative;
-	top: 150px;
+    margin: auto;
+    width: 50%;
+    border-radius: 4px;
+    border: 1px solid #d0d0d0;
+    background-color: white;
+    position: relative;
+    /* top: 150px;  */
 }
 
 .mb1 {
@@ -312,5 +357,7 @@ input.pantryTextBox:focus{
 }
 
 .noScroll {
-	overflow-y: hidden;
+	overflow: hidden;
+    /* height: 100%; */
+    /* width: 100%; */
 }

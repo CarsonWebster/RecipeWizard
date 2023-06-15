@@ -1,6 +1,6 @@
 """
 This file defines actions, i.e. functions the URLs are mapped into
-The @action(path) decorator exposed the function at URL:
+The @action(path) decorator exposes the function at URL:
 
     http://127.0.0.1:8000/{app_name}/{path}
 
@@ -18,27 +18,24 @@ The path follows the bottlepy syntax.
 @action.uses(session)         indicates that the action uses the session
 @action.uses(db)              indicates that the action uses the db
 @action.uses(T)               indicates that the action uses the i18n & pluralization
-@action.uses(auth.user)       indicates that the action requires a logged in user
+@action.uses(auth.user)       indicates that the action requires a logged-in user
 @action.uses(auth)            indicates that the action requires the auth object
 
-session, db, T, auth, and tempates are examples of Fixtures.
+session, db, T, auth, and templates are examples of Fixtures.
 Warning: Fixtures MUST be declared with @action.uses({fixtures}) else your app will result in undefined behavior
 """
+
 import re
 import json
-from py4web import action, request, abort, redirect, URL
+from py4web.utils.form import Form, FormStyleBulma
+from py4web import action, request, abort, redirect, URL, HTTP
 from yatl.helpers import A
 from .common import (
     db,
     session,
-    T,
-    cache,
     auth,
-    logger,
-    authenticated,
-    unauthenticated,
-    flash,
 )
+
 from datetime import datetime
 from py4web.utils.url_signer import URLSigner
 from .models import get_user_email
@@ -54,7 +51,7 @@ url_signer = URLSigner(session)
 @action("index")
 @action.uses("index.html", db, auth.user, url_signer)
 def index():
-    return dict(
+    response = dict(
         # COMPLETE: return here any signed URLs you need.
         getPantry_url=URL("getPantry", signer=url_signer),
         addItemToPantry_url=URL("addItemToPantry", signer=url_signer),
@@ -67,15 +64,20 @@ def index():
         deleteFav_url=URL("deleteFav", signer=url_signer),
         togglePin_url=URL("togglePin", signer=url_signer),
         getPinned_url=URL("getPinned", signer=url_signer),
+        uploadImage_url=URL("upload_image", signer=url_signer),
+        getUserID_url=URL("getUserID", signer=url_signer),
+        setPinnedRecipeImageURL_url=URL(
+            "setPinnedRecipeImageURL", signer=url_signer),
     )
+    return response
 
 
 @action("getPantry", method="GET")
 @action.uses(db, auth.user, url_signer)
 def getPantry():
-    userID = auth.current_user.get("id")
-    pantry = db(db.pantry.user_id == userID).select().as_list()
-    return dict(pantry=pantry)
+    response = dict(pantry=db(db.pantry.user_id ==
+                    auth.current_user.get("id")).select().as_list())
+    return response
 
 
 @action("addItemToPantry", method="POST")
@@ -84,16 +86,13 @@ def addItemToPantry():
     userID = auth.current_user.get("id")
     item = request.json.get("item")
     if db((db.pantry.user_id == userID) & (db.pantry.item == item)).select().first():
-        return dict(success=False)
-    db.pantry.insert(
-        user_id=userID,
-        item=item,
-    )
-    newItem = db((db.pantry.user_id == userID) & (
-        db.pantry.item == item)).select().first()
-    return dict(success=True, newItem=newItem)
-
-# probably need to add security to this
+        response = dict(success=False)
+    else:
+        db.pantry.insert(user_id=userID, item=item)
+        newItem = db((db.pantry.user_id == userID) & (
+            db.pantry.item == item)).select().first()
+        response = dict(success=True, newItem=newItem)
+    return response
 
 
 @action("deleteItem", method="POST")
@@ -252,17 +251,24 @@ def deleteFav():
 @action.uses(db, auth.user, url_signer)
 def favRecipe():
     userID = auth.current_user.get("id")
-    # recipeID = request.json.get("recipeID")
     recipeTitle = request.json.get("recipeTitle")
-    if recipeTitle is None:
+    if recipeTitle is None or "":
         recipeTitle = "Unnamed"
     recipeIngredients = request.json.get("recipeIngredients")
-    if recipeIngredients is None:
+    if recipeIngredients is None or "":
         recipeIngredients = "No ingredients provided"
     recipeInstructions = request.json.get("recipeInstructions")
-    if recipeInstructions is None:
+    if recipeInstructions is None or "":
         recipeInstructions = "No instructions provided"
     print("Request to favorite recipe: ", recipeTitle)
+    # Check if recipeTitle is already in favoritesDB
+    existingFav = db(db.favorites.user_id == userID).select().as_list()
+    if existingFav is not None:
+        for fav in existingFav:
+            if fav["title"] == recipeTitle:
+                print("Recipe already favorited")
+                return dict(success=False)
+
     db.favorites.insert(
         user_id=userID,
         title=recipeTitle,
@@ -287,9 +293,11 @@ def getFavs():
 def togglePin():
     userID = auth.current_user.get("id")
     favID = request.json.get("favID")
+
     # Grab the favorite recipe row
-    favRecipe = db(db.favorites.id == favID,
-                   db.favorites.user_id == userID).select().first()
+    favRecipe = db((db.favorites.id == favID) & (
+        db.favorites.user_id == userID)).select().first()
+
     # If the recipe is already pinned, unpin it
     if favRecipe.pinned:
         db(db.favorites.id == favID).update(pinned=False)
@@ -297,7 +305,7 @@ def togglePin():
     else:
         db(db.favorites.user_id == userID).update(pinned=False)
         db(db.favorites.id == favID).update(pinned=True)
-    return dict(success=True)
+    return dict(success=True, pinnedRecipe=favRecipe)
 
 
 @action("getPinned", method="GET")
@@ -317,7 +325,28 @@ def getPinned():
             "favorited_at": recipe.favorited_at,
             "pinned": recipe.pinned,
             "user_name": first_name,
+            "user_id": recipe.user_id,
+            "imageUrl": recipe.imageUrl,
         }
         pinned_list.append(recipe_dict)
-    # print("Returning Pinned", pinned_list)
+    # print("Returning Pinned!", pinned_list)
     return dict(pinned=pinned_list)
+
+
+@action("getUserID", method="GET")
+@action.uses(db, auth.user, url_signer)
+def getUserID():
+    userID = auth.current_user.get("id")
+    return dict(userID=userID)
+
+
+@action("setPinnedRecipeImageURL", method="POST")
+@action.uses(db, auth.user, url_signer)
+def setPinnedRecipeImageURL():
+    # print("Setting pinned recipe image URL")
+    dbID = request.json.get("dbID")
+    imageUrl = request.json.get("imageUrl")
+    # print("Requested Image URL:", imageUrl)
+    # print("Updating recipe with ID", dbID)
+    db(db.favorites.id == dbID).update(imageUrl=imageUrl)
+    return dict(success=True)
