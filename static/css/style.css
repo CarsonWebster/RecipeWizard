@@ -187,6 +187,7 @@ input.pantryTextBox:focus{
 
 .recipeCard:hover {
 	cursor: pointer;
+	background-color: rgba(0, 0, 0, 0.1);
 }
 
 .recipeHeader {
@@ -195,6 +196,8 @@ input.pantryTextBox:focus{
 	border-bottom: 1px solid #d0d0d0;
 	font-size: 18px;
 	padding: 16px;
+	overflow-wrap: break-word;
+	
 }
 
 .recipeBody {
@@ -261,6 +264,7 @@ input.pantryTextBox:focus{
 
 .favoritesText:hover {
 	cursor: pointer;
+	background-color: rgba(0, 0, 0, 0.1); /* Black overlay with some transparency */
 }
 
 .favorites {
@@ -275,11 +279,14 @@ input.pantryTextBox:focus{
 	max-height: 250px;
 	overflow-y: auto;
 	margin: 10px;
+	overflow-wrap: break-word;
+	text-align: left;
 	/* max-height: 300px; */
 }
 
 .favoriteCard:hover {
 	cursor: pointer;
+	background-color: rgba(0, 0, 0, 0.1);
 }
 
 .emptyFavs {
