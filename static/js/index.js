@@ -391,26 +391,6 @@ let init = (app) => {
     });
   }
 
-  app.getPinned = function() {
-    axios.get(getPinned_url).then(function(r) {
-      let pinnedIndex = 0;
-      app.vue.pinned = r.data.pinned.map((pinnedObj) => {
-        const addedPin = {
-          _idx: pinnedIndex,
-          dbID: pinnedObj.id,
-          title: pinnedObj.title,
-          ingredients: pinnedObj.ingredients,
-          instructions: pinnedObj.instructions,
-          pinned: pinnedObj.pinned,
-          user_name: pinnedObj.user_name
-        };
-        pinnedIndex++;
-        return addedPin;
-      });
-      // console.log(app.vue.pinned);
-    });
-  }
-
   app.toggleFavoritesExpanded = function() {
     app.vue.favoritesExpanded = !app.vue.favoritesExpanded;
   }
