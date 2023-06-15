@@ -110,6 +110,7 @@ defaultPrompt = """
     "Utilize the provided ingredients exclusively to reduce food waste and maximize resourcefulness.",
     "Exclude recipes that contain restricted ingredients based on dietary restrictions. For example, for vegetarian recipes, do not include any animal-based ingredients, including meat like beef, chicken, fish, lamb, etc. Additionally, consider other common dietary restrictions such as vegan, gluten-free, nut allergies, etc. Exclude specific ingredients based on the stated dietary preferences, unless \\"NONE\\" is specified.",
     "Offer a variety of recipe options, including breakfast, lunch, dinner, snacks, and desserts, to cater to different meal preferences.",
+    "The generated recipe suggestion does not need to include all pantry items. Use a subset of the pantry items to create a reasonable yummy recipe.",
     "Provide a recipe that is not included in the given list of existing recipes.",
     "Optionally, consider recipes that are quick and easy to prepare, perfect for busy individuals or those with limited cooking time.",
     "Optionally, provide recipes with a balanced nutritional profile, considering macronutrients and minimizing sugar content."
