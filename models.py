@@ -5,6 +5,7 @@ This file defines the database models
 import datetime
 from .common import db, Field, auth
 from pydal.validators import *
+from pydal.validators import IS_URL
 
 
 def get_user_email():
@@ -57,6 +58,6 @@ db.define_table('favorites',
                 Field('instructions', 'list:string'),
                 Field('pinned', 'boolean', default=False),
                 Field('favorited_at', 'datetime', default=get_time()),
+                Field('imageUrl', 'string', requires=IS_URL()),
                 )
-
 db.commit()
