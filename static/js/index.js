@@ -363,6 +363,35 @@ let init = (app) => {
     });
   };
 
+  app.toggleRecipe = function(row_idx) {
+    app.vue.recipes[row_idx].show = !app.vue.recipes[row_idx].show
+  }
+
+  app.testCompletion = function() {
+    // console.log("Testing completion")
+    axios.get(testCompletion_url).then((data) => {
+      // console.log(data)
+    })
+  }
+
+  app.togglePin = function(idx) {
+    fetch(togglePin_url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        favID: app.vue.favorites[idx].dbID,
+      }),
+    }).then((response) => {
+      // console.log("Favorite pinned/unpinned");
+      // console.log(response);
+      // Refreshing the list
+      app.getFavs();
+      app.getPinned();
+    });
+  }
+
   app.toggleFavoritesExpanded = function() {
     app.vue.favoritesExpanded = !app.vue.favoritesExpanded;
   }
