@@ -2,6 +2,11 @@
 	color: rgb(170, 170, 170);
 }
 
+.logoText {
+	color: #95FFDF;
+	font-size: 18px;
+}
+
 .titleText {
 	font-size: 24px;
 	margin: 24px;
