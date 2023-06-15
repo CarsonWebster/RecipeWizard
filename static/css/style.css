@@ -216,6 +216,10 @@ input.pantryTextBox:focus{
 	color: red;
 }
 
+.favButton {
+	color: rgb(170, 170, 170);
+}
+
 .favButton:hover {
 	color: gold;
 }
