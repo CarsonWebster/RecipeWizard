@@ -66,4 +66,3 @@ And pull rebase option set to true. Pull frequently! :)
 git config --global pull.rebase true
 ```
 
-Test commit?
