@@ -66,3 +66,7 @@ And pull rebase option set to true. Pull frequently! :)
 git config --global pull.rebase true
 ```
 
+Documentation:
+https://docs.google.com/document/d/17iUMk6UEk81oP1BECo_PvxDyMfV2YU_0Dee6gLgSGD4/edit
+
+
