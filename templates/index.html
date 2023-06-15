@@ -182,11 +182,13 @@
                       </div>
                       <div class="level">
                         <span class="level-left">
-                          <button class="button is-small is-danger" @click="deletePinnedImageURL(idx)">Delete Image
+                          <button class="button is-small is-danger"
+                            @click="deletePinnedImageURL(pinnedRecipe.dbID)">Delete Image
                             URL</button>
                         </span>
                         <span class="level-right">
-                          <button class="button is-small is-info" @click="setPinnedImageURL(idx)">Set Image
+                          <button class="button is-small is-info" @click="setPinnedImageURL(pinnedRecipe.dbID)">Set
+                            Image
                             URL</button>
                         </span>
                       </div>

@@ -142,11 +142,12 @@ let init = (app) => {
 
   app.getPinned = function() {
     axios.get(getPinned_url).then(function(r) {
+      // console.log("Got pinned recipes", r.data.pinned);
       let pinnedIndex = 0;
       app.vue.pinned = r.data.pinned.map((pinnedObj) => {
         const addedPin = {
           _idx: pinnedIndex,
-          dbID: pinnedObj.id,
+          dbID: pinnedObj.dbID,
           title: pinnedObj.title,
           ingredients: pinnedObj.ingredients,
           instructions: pinnedObj.instructions,
@@ -158,7 +159,7 @@ let init = (app) => {
         pinnedIndex++;
         return addedPin;
       });
-      // console.log(app.vue.pinned);
+      // console.log("Local Pinned", app.vue.pinned);
     });
   };
 
@@ -191,16 +192,16 @@ let init = (app) => {
     });
   };
 
-  app.setPinnedImageURL = function(idx) {
-    // console.log("Setting pinned image URL with fav index:", idx);
-    // console.log("And DB index:", app.vue.favorites[idx].dbID);
+  app.setPinnedImageURL = function(dbID) {
+    // console.log("Setting pinned image URL with dbID:", dbID);
     fetch(setPinnedRecipeImageURL_url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        favID: app.vue.favorites[idx].dbID,
+        // favID: app.vue.favorites[idx].dbID,
+        dbID: dbID,
         imageUrl: app.vue.pinnedRecipeImageURLInput,
       }),
     }).then((response) => {
@@ -409,7 +410,7 @@ let init = (app) => {
     } else if (mode == 2) {
       app.vue.selectedRecipe = app.vue.pinned[idx];
     }
-    console.log(app.vue.selectedRecipe);
+    // console.log(app.vue.selectedRecipe);
   }
 
   // This contains all the methods.

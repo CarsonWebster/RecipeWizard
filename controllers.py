@@ -329,7 +329,7 @@ def getPinned():
             "imageUrl": recipe.imageUrl,
         }
         pinned_list.append(recipe_dict)
-    # print("Returning Pinned", pinned_list)
+    # print("Returning Pinned!", pinned_list)
     return dict(pinned=pinned_list)
 
 
@@ -343,10 +343,10 @@ def getUserID():
 @action("setPinnedRecipeImageURL", method="POST")
 @action.uses(db, auth.user, url_signer)
 def setPinnedRecipeImageURL():
-    print("Setting pinned recipe image URL")
-    favID = request.json.get("favID")
+    # print("Setting pinned recipe image URL")
+    dbID = request.json.get("dbID")
     imageUrl = request.json.get("imageUrl")
-    print("Requested Image URL:", imageUrl)
-    print("Updating recipe with ID", favID)
-    db(db.favorites.id == favID).update(imageUrl=imageUrl)
+    # print("Requested Image URL:", imageUrl)
+    # print("Updating recipe with ID", dbID)
+    db(db.favorites.id == dbID).update(imageUrl=imageUrl)
     return dict(success=True)
