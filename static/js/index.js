@@ -21,6 +21,8 @@ let init = (app) => {
     pantryExpanded: false,
     displayTrash: -1, // Which trashcan to display
     editingPinnedImage: false,
+    recipePopup: false,
+    selectedRecipe: null,
   };
 
   app.enumerate = (a) => {
@@ -360,6 +362,77 @@ let init = (app) => {
     });
   };
 
+  app.toggleRecipe = function(row_idx) {
+    app.vue.recipes[row_idx].show = !app.vue.recipes[row_idx].show
+  }
+
+  app.testCompletion = function() {
+    console.log("Testing completion")
+    axios.get(testCompletion_url).then((data) => {
+      console.log(data)
+    })
+  }
+
+  app.togglePin = function(idx) {
+    fetch(togglePin_url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        favID: app.vue.favorites[idx].dbID,
+      }),
+    }).then((response) => {
+      console.log("Favorite pinned/unpinned");
+      // console.log(response);
+      // Refreshing the list
+      app.getFavs();
+      app.getPinned();
+    });
+  }
+
+  app.getPinned = function() {
+    axios.get(getPinned_url).then(function(r) {
+      let pinnedIndex = 0;
+      app.vue.pinned = r.data.pinned.map((pinnedObj) => {
+        const addedPin = {
+          _idx: pinnedIndex,
+          dbID: pinnedObj.id,
+          title: pinnedObj.title,
+          ingredients: pinnedObj.ingredients,
+          instructions: pinnedObj.instructions,
+          pinned: pinnedObj.pinned,
+          user_name: pinnedObj.user_name
+        };
+        pinnedIndex++;
+        return addedPin;
+      });
+      // console.log(app.vue.pinned);
+    });
+  }
+
+  app.toggleFavoritesExpanded = function() {
+    app.vue.favoritesExpanded = !app.vue.favoritesExpanded;
+  }
+
+  app.togglePinnedRecipesExpanded = function() {
+    app.vue.pinnedRecipesExpanded = !app.vue.pinnedRecipesExpanded;
+  }
+
+  // mode determines if clicked recipe is in 0-generated, 1-favorites, 2-pinned
+  app.selectRecipePopup = function(mode, idx) {
+    app.vue.recipePopup = true;
+    if (mode == 0) {
+      app.vue.selectedRecipe = app.vue.recipes[idx];
+    } else if (mode == 1) {
+      app.vue.selectedRecipe = app.vue.favorites[idx];
+    } else if (mode == 2) {
+      app.vue.selectedRecipe = app.vue.pinned[idx];
+    }
+    console.log(app.vue.selectedRecipe);
+  }
+
+  // This contains all the methods.
   app.methods = {
     // Complete as you see fit.
     toggleFavoritesExpanded() {
@@ -386,6 +459,7 @@ let init = (app) => {
     getUserID: app.getUserID,
     setPinnedImageURL: app.setPinnedImageURL,
     deletePinnedImageURL: app.deletePinnedImageURL,
+    selectRecipePopup: app.selectRecipePopup,
   };
 
   // This creates the Vue instance.

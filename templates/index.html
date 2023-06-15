@@ -16,7 +16,7 @@
         <!-- Pantry column -->
         <div class="column is-8">
           <!-- Whole pantry element -->
-          <section>
+          <section :class="{ mb1: (numPantryRows > 5),  mb5: (numPantryRows <= 5) }">
             <div class="pantryBox">
               <div class="columns m-0">
                 <div class="column is-6 p-0">
@@ -120,14 +120,13 @@
               </div>
             </div>
           </section>
-
           <!-- Favorites Section -->
           <section class="favoritesContainer" :class="{ collapsed: !favoritesExpanded }">
             <header class="favoritesText" @click="toggleFavoritesExpanded">Favorites</header>
             <div class="columns">
               <div class="favorites">
                 <div v-if="favorites.length == 0" class="emptyFavs">Add some favorites...</div>
-                <article v-for="fav in favorites" class="favoriteCard">
+                <article v-for="fav in favorites" class="favoriteCard" @click="selectRecipePopup(1, fav._idx)">
                   <div class="recipeHeader">
                     <span class="level">
                       <span class="level-left">{{fav.title}}
@@ -162,7 +161,6 @@
             <div class="columns">
               <div class="favorites">
                 <div v-if="pinned.length == 0" class="emptyFavs">No users have a recipe pinned D:</div>
-
                 <article v-for="(pinnedRecipe, idx) in pinned" :key="pinnedRecipe._idx" class="favoriteCard">
                   <!-- <p>Recipe Title: {{ pinnedRecipe.title }}</p>
                   <p>Image URL: {{ pinnedRecipe.imageUrl }}</p> -->
@@ -188,7 +186,8 @@
                             URL</button>
                         </span>
                         <span class="level-right">
-                          <button class="button is-small is-info" @click="setPinnedImageURL(idx)">Set Image URL</button>
+                          <button class="button is-small is-info" @click="setPinnedImageURL(idx)">Set Image
+                            URL</button>
                         </span>
                       </div>
                     </div>
@@ -218,7 +217,7 @@
           <div class="recipesColumn">
             <article class="is-clickable generateButton" @click="addRecipe">Generate New Recipe</article>
 
-            <article v-for="recipe in recipes" class="recipeCard">
+            <article v-for="recipe in recipes" class="recipeCard" @click="selectRecipePopup(0, recipe._idx)">
               <div class="recipeHeader">
                 <span class="level">
                   <span class="level-left">Recipe:</span>
@@ -246,6 +245,26 @@
       </div>
     </div>
   </div>
+
+  <div v-if="recipePopup" class="recipePopupContainer">
+    <div class="popupBackground" @click="recipePopup = false"></div>
+    <section class="popupRecipeCard">
+      <div class="recipeHeader">
+        <span class="">{{selectedRecipe.title}}</span>
+      </div>
+      <div class="recipeBody">
+        <div class="recipeContent">Ingredients:</div>
+        <div v-for="ingredient in selectedRecipe.ingredients" class="recipeContent">{{ingredient}}</div>
+        <div class="recipeContent">
+          <br>
+          Instructions:
+        </div>
+        <div v-for="instructions in selectedRecipe.instructions" class="recipeContent">{{instructions}}</div>
+      </div>
+    </section>
+  </div>
+
+  <!-- <button class="button is-warning" @click="generateRecipeSuggestion">Test AI Completion python function</button> -->
 
   <!-- section end div -->
 </div>
