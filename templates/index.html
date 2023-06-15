@@ -119,24 +119,22 @@
               </div>
             </div>
           </section>
+
           <!-- Favorites section -->
           <section class="favoritesContainer mb-5" :class="{ collapsed: !favoritesExpanded }">
             <header class="favoritesText" @click="toggleFavoritesExpanded">Favorites</header>
             <div class="columns">
               <div class="favorites">
                 <div v-if="favorites.length == 0" class="emptyFavs">Add some favorites...</div>
-                <article v-for="fav in favorites" class="favoriteCard" @click="selectRecipePopup(1, fav._idx)">
+                <article v-for="fav in favorites" class="favoriteCard">
                   <div class="recipeHeader">
                     <span class="level">
-                      <span class="level-left">{{fav.title}}
-                        <span class="icon level-left is-small is-clickable">
-                          <i v-if="fav.pinned == false" class="fa fa-thumb-tack mr-2 unPinnedColor"
-                            @click="togglePin(fav._idx)"></i>
-                          <i v-else class="fa fa-thumb-tack mr-2 PinnedColor" @click="togglePin(fav._idx)"></i>
-                        </span>
-                        <span class="icon level-left is-small is-clickable unfav-color">
-                          <i class="fa fa-star mr-2 unfavButton" @click="deleteFav(fav._idx)"></i>
-                        </span>
+                      <span class="level-left popupButton" @click="selectRecipePopup(1, fav._idx)">{{fav.title}}</span>
+                      <span class="icon level-right is-small is-clickable">
+                        <i v-if="fav.pinned == false" class="fa fa-thumb-tack mr-2 unPinnedColor"
+                          @click="togglePin(fav._idx)"></i>
+                        <i v-else class="fa fa-thumb-tack mr-2 PinnedColor" @click="togglePin(fav._idx)"></i>
+                        <i class="fa fa-star mr-2 unfavButton unfav-color" @click="deleteFav(fav._idx)"></i>
                       </span>
                     </span>
                   </div>
@@ -160,10 +158,10 @@
             <div class="columns">
               <div class="favorites">
                 <div v-if="pinned.length == 0" class="emptyFavs">No users have a recipe pinned D:</div>
-                <article v-for="pinnedRecipe in pinned" class="favoriteCard" @click="selectRecipePopup(2, pinnedRecipe._idx)">
+                <article v-for="pinnedRecipe in pinned" class="favoriteCard">
                   <div class="recipeHeader">
                     <span class="level">
-                      <span class="level-left">{{pinnedRecipe.title}}</span>
+                      <span class="level-left popupButton" @click="selectRecipePopup(2, pinnedRecipe._idx)">{{pinnedRecipe.title}}</span>
                       <!-- <span class="icon level-right is-small is-clickable"> -->
                       <!-- <i v-if="fav.pinned == false" class="fa fa-thumb-tack mr-2 unPinnedColor" -->
                       <!-- @click="togglePin(fav._idx)"></i> -->
@@ -172,8 +170,8 @@
                       <!-- <span class="icon level-right is-small is-clickable unfav-color"> -->
                       <!-- <i class="fa fa-star mr-2 unfavButton" @click="deleteFav(fav._idx)"></i> -->
                       <!-- </span> -->
+                      <span class="level-right">{{pinnedRecipe.user_name}}</span>
                     </span>
-                    <span class="level-right">User: {{pinnedRecipe.user_name}}</span>
                   </div>
                   <div class="recipeBody">
                     <div class="recipeContent">Ingredients:</div>
@@ -194,16 +192,16 @@
           <div class="recipesColumn">
             <article class="is-clickable generateButton" @click="addRecipe">Generate New Recipe</article>
 
-            <article v-for="recipe in recipes" class="recipeCard" @click="selectRecipePopup(0, recipe._idx)">
+            <article v-for="recipe in recipes" class="recipeCard">
               <div class="recipeHeader">
                 <span class="level">
-                  <span class="level-left">Recipe:</span>
+                  <span class="level-left popupButton" @click="selectRecipePopup(0, recipe._idx)">{{recipe.title}}</span>
                   <span class="icon level-right is-small is-clickable icon-color">
                     <i class="fa fa-star mr-2 favButton" @click="favRecipe(recipe._idx)"></i>
                     <i class="fa fa-trash ml-2 trashButton" @click="deleteRecipe(recipe._idx)"></i>
                   </span>
                 </span>
-                {{recipe.title}}
+                <!-- {{recipe.title}} -->
                 <!-- <p>Recipe #{{recipe._idx + 1}}</p> -->
                 <!-- <button class="button is-link is-rounded is-small is-responsive"
                   @click="toggleRecipe(recipe._idx)">show/hide</button> -->
