@@ -356,6 +356,8 @@ input.pantryTextBox:focus{
     border: 1px solid #d0d0d0;
     background-color: white;
     position: relative;
+	max-height: 80%;
+	overflow-y: scroll;
     /* top: 150px;  */
 }
 
