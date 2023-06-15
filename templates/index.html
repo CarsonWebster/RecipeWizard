@@ -127,16 +127,13 @@
               <div class="favorites">
                 <div v-if="favorites.length == 0" class="emptyFavs">Add some favorites...</div>
                 <article v-for="fav in favorites" class="favoriteCard">
-                  <div class="recipeHeader">
-                    <span class="level">
-                      <span class="level-left popupButton" @click="selectRecipePopup(1, fav._idx)">{{fav.title}}</span>
-                      <span class="icon level-right is-small is-clickable">
-                        <i v-if="fav.pinned == false" class="fa fa-thumb-tack mr-2 unPinnedColor"
-                          @click="togglePin(fav._idx)"></i>
-                        <i v-else class="fa fa-thumb-tack mr-2 PinnedColor" @click="togglePin(fav._idx)"></i>
-                        <i class="fa fa-star mr-2 unfavButton unfav-color" @click="deleteFav(fav._idx)"></i>
-                      </span>
-                    </span>
+                  <div class="recipeHeader" @click="selectRecipePopup(1, fav._idx)">
+                    <div class="recipeTitle">{{fav.title}}</div>
+                    <div class="recipeIcons">
+                      <i v-if="fav.pinned == false" class="fa fa-thumb-tack mr-2 unPinnedColor" @click.stop="togglePin(fav._idx)"></i>
+                      <i v-else class="fa fa-thumb-tack mr-2 PinnedColor" @click.stop="togglePin(fav._idx)"></i>
+                      <i class="fa fa-star mr-2 unfavButton unfav-color" @click.stop="deleteFav(fav._idx)"></i>
+                    </div>
                   </div>
                   <div class="recipeBody">
                     <div class="recipeContent">Ingredients:</div>
@@ -161,17 +158,18 @@
                 <article v-for="(pinnedRecipe, idx) in pinned" :key="pinnedRecipe._idx" class="favoriteCard">
                   <!-- <p>Recipe Title: {{ pinnedRecipe.title }}</p>
                   <p>Image URL: {{ pinnedRecipe.imageUrl }}</p> -->
-                  <div class="recipeHeader">
-                    <span class="popupButton" @click="selectRecipePopup(2, pinnedRecipe._idx)">{{ pinnedRecipe.title }}</span>
+                  <div class="recipeHeader"@click="selectRecipePopup(2, pinnedRecipe._idx)">
+                    <span class="recipeTitle">{{ pinnedRecipe.title }}</span>
                     <div class="level">
                       <div class="level-left">
                         <span v-if="user_id == pinnedRecipe.user_id" class="level-item icon is-small is-clickable">
-                          <i class="fa fa-image" @click="toggleEditingPinnedImage "></i>
+                          <i class="fa fa-image" @click.stop="toggleEditingPinnedImage "></i>
                         </span>
                       </div>
                       <div class="level-right">
                         <span class="level-item">User: {{ pinnedRecipe.user_name }}</span>
                       </div>
+                    </div>
                     </div>
                     <div v-if="editingPinnedImage && user_id == pinnedRecipe.user_id">
                       <div class="level">
@@ -217,20 +215,14 @@
             <article class="is-clickable generateButton" @click="addRecipe">Generate New Recipe</article>
 
             <article v-for="recipe in recipes" class="recipeCard">
-              <div class="recipeHeader">
-                <span class="level">
-                  <span class="level-left popupButton" @click="selectRecipePopup(0, recipe._idx)">{{recipe.title}}</span>
-                  <span class="icon level-right is-small is-clickable icon-color">
-                    <i class="fa fa-star mr-2 favButton" @click="favRecipe(recipe._idx)"></i>
-                    <i class="fa fa-trash ml-2 trashButton" @click="deleteRecipe(recipe._idx)"></i>
-                  </span>
-                </span>
-                <!-- {{recipe.title}} -->
-                <!-- <p>Recipe #{{recipe._idx + 1}}</p> -->
-                <!-- <button class="button is-link is-rounded is-small is-responsive"
-                  @click="toggleRecipe(recipe._idx)">show/hide</button> -->
-                <!-- <button class="delete" aria-label="delete"></button> -->
+              <div class="recipeHeader"  @click="selectRecipePopup(0, recipe._idx)">
+                <div class="recipeTitle">{{recipe.title}}</div>
+                <div class="recipeIcons">
+                  <i class="fa fa-star mr-2 favButton" @click.stop="favRecipe(recipe._idx)"></i>
+                  <i class="fa fa-trash ml-2 trashButton" @click.stop="deleteRecipe(recipe._idx)"></i>
+                </div>
               </div>
+            
               <div v-if="recipe.show" class="recipeBody">
                 <button v-if="recipe.loading" class="button is-link is-loading">Loading...</button>
                 <div v-if="!recipe.loading" class="recipeContent">Ingredients:</div>
