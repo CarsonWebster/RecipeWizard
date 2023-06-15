@@ -252,15 +252,23 @@ def deleteFav():
 def favRecipe():
     userID = auth.current_user.get("id")
     recipeTitle = request.json.get("recipeTitle")
-    if recipeTitle is None:
+    if recipeTitle is None or "":
         recipeTitle = "Unnamed"
     recipeIngredients = request.json.get("recipeIngredients")
-    if recipeIngredients is None:
+    if recipeIngredients is None or "":
         recipeIngredients = "No ingredients provided"
     recipeInstructions = request.json.get("recipeInstructions")
-    if recipeInstructions is None:
+    if recipeInstructions is None or "":
         recipeInstructions = "No instructions provided"
     print("Request to favorite recipe: ", recipeTitle)
+    # Check if recipeTitle is already in favoritesDB
+    existingFav = db(db.favorites.user_id == userID).select().as_list()
+    if existingFav is not None:
+        for fav in existingFav:
+            if fav["title"] == recipeTitle:
+                print("Recipe already favorited")
+                return dict(success=False)
+
     db.favorites.insert(
         user_id=userID,
         title=recipeTitle,
