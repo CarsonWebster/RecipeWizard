@@ -171,7 +171,7 @@ def getExistingRecipeTitles():
 @action("generateRecipeSuggestion", method="GET")
 @action.uses(db, auth.user)
 def generateRecipeSuggestion():
-    print("\nCalling a recipe suggestion generation!")
+    # print("\nCalling a recipe suggestion generation!")
     openai.api_key = secrets["OPENAI_KEY"]
 
     userID = auth.current_user.get("id")
@@ -258,13 +258,13 @@ def favRecipe():
     recipeInstructions = request.json.get("recipeInstructions")
     if recipeInstructions is None or "":
         recipeInstructions = "No instructions provided"
-    print("Request to favorite recipe: ", recipeTitle)
+    # print("Request to favorite recipe: ", recipeTitle)
     # Check if recipeTitle is already in favoritesDB
     existingFav = db(db.favorites.user_id == userID).select().as_list()
     if existingFav is not None:
         for fav in existingFav:
             if fav["title"] == recipeTitle:
-                print("Recipe already favorited")
+                # print("Recipe already favorited")
                 return dict(success=False)
 
     db.favorites.insert(

@@ -75,13 +75,13 @@ let init = (app) => {
       .then((response) => response.json())
       .then((data) => {
         if (data.success == true) {
-          console.log("Item added!");
+          // console.log("Item added!");
           this.ingredientInput = "";
           // app.getPantry();
           app.vue.pantry.push(data.newItem);
           app.updatePantryRows();
         } else {
-          console.log("Item already in pantry");
+          // console.log("Item already in pantry");
           alert("Item already in pantry");
         }
       });
@@ -100,7 +100,7 @@ let init = (app) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Item deleted");
+        // console.log("Item deleted");
         app.getPantry(); // could also just remove item from pantry for more efficiency but less consistency
         app.updatePantryRows();
       });
@@ -116,9 +116,9 @@ let init = (app) => {
   };
 
   app.testCompletion = function() {
-    console.log("Testing completion");
+    // console.log("Testing completion");
     axios.get(testCompletion_url).then((data) => {
-      console.log(data);
+      // console.log(data);
     });
   };
 
@@ -132,7 +132,7 @@ let init = (app) => {
         favID: app.vue.favorites[idx].dbID,
       }),
     }).then((response) => {
-      console.log("Favorite pinned/unpinned");
+      // console.log("Favorite pinned/unpinned");
       // console.log(response);
       // Refreshing the list
       app.getFavs();
@@ -264,7 +264,7 @@ let init = (app) => {
   };
 
   app.genRecipe = function(idx) {
-    console.log("generating recipe:");
+    // console.log("generating recipe:");
     // Toggle recipe loading
     app.vue.recipes[idx].loading = true;
     app.vue.recipes[idx].title = "Loading...";
@@ -278,7 +278,7 @@ let init = (app) => {
   };
 
   app.deleteRecipe = function(idx) {
-    console.log("Deleting db recipe:", app.vue.recipes[idx]);
+    // console.log("Deleting db recipe:", app.vue.recipes[idx]);
     // console.log(idx);
     // console.log(app.vue.recipes[idx].dbID);
     // console.log(app.vue.recipes[idx]);
@@ -291,7 +291,7 @@ let init = (app) => {
         recipeID: app.vue.recipes[idx].dbID,
       }),
     }).then((response) => {
-      console.log("Item deleted");
+      // console.log("Item deleted");
       // console.log(response);
       // Remove the recipe from the vue list. Does not refresh the index of recipes in vue list
       // app.vue.recipes.splice(idx, 1);
@@ -301,7 +301,7 @@ let init = (app) => {
   };
 
   app.deleteFav = function(idx) {
-    console.log("Deleting db favorite:", app.vue.favorites[idx]);
+    // console.log("Deleting db favorite:", app.vue.favorites[idx]);
     fetch(deleteFav_url, {
       method: "POST",
       headers: {
@@ -311,7 +311,7 @@ let init = (app) => {
         favID: app.vue.favorites[idx].dbID,
       }),
     }).then((response) => {
-      console.log("Favorite deleted");
+      // console.log("Favorite deleted");
       // console.log(response);
       // Remove the recipe from the vue list. Does not refresh the index of recipes in vue list
       // app.vue.recipes.splice(idx, 1);
@@ -325,7 +325,7 @@ let init = (app) => {
     recipeIngredients = app.vue.recipes[idx].ingredients;
     recipeInstructions = app.vue.recipes[idx].instructions;
     recipeID = app.vue.recipes[idx].dbID;
-    console.log("Favoriting: ", recipeTitle);
+    // console.log("Favoriting: ", recipeTitle);
     fetch(favRecipe_url, {
       method: "POST",
       headers: {
@@ -368,9 +368,9 @@ let init = (app) => {
   }
 
   app.testCompletion = function() {
-    console.log("Testing completion")
+    // console.log("Testing completion")
     axios.get(testCompletion_url).then((data) => {
-      console.log(data)
+      // console.log(data)
     })
   }
 
@@ -384,7 +384,7 @@ let init = (app) => {
         favID: app.vue.favorites[idx].dbID,
       }),
     }).then((response) => {
-      console.log("Favorite pinned/unpinned");
+      // console.log("Favorite pinned/unpinned");
       // console.log(response);
       // Refreshing the list
       app.getFavs();
@@ -417,10 +417,10 @@ let init = (app) => {
   app.updateScrolling = function() {
     if (app.vue.recipePopup) {
       document.body.style.overflow = 'hidden';
-      console.log("here?");
+      // console.log("here?");
     } else {
       document.body.style.overflow = 'auto';
-      console.log("here2?");
+      // console.log("here2?");
     }
   };
 
