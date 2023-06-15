@@ -1,5 +1,5 @@
 ::placeholder {
-	color: rgb(130, 130, 130);
+	color: rgb(170, 170, 170);
 }
 
 .titleText {
@@ -59,7 +59,7 @@ input.pantryTextBox:focus{
 
 .addButton:hover {
 	background-color: #87f3d2;
-	color: rgb(140, 140, 140);
+	color: rgb(170, 170, 170);
 }
 
 .pantryBody {
@@ -69,7 +69,7 @@ input.pantryTextBox:focus{
 }
 
 .emptyPantry {
-	color: rgb(130, 130, 130);
+	color: rgb(170, 170, 170);
 	height: 0;
 	margin-left: 8px;
 	position: relative;
@@ -188,9 +188,14 @@ input.pantryTextBox:focus{
 	border-bottom: 1px solid #d0d0d0;
 	font-size: 18px;
 	padding: 16px;
-	overflow-wrap: break-word;
+	display: block;
+	width: 100%;
 
-	z-index: 1; /* Ensure the header appears above the image overlay */
+}
+
+.recipeHeader:hover {
+	cursor: pointer;
+	background-color: #f0f0f0;
 }
 
 .recipeBody {
@@ -280,10 +285,7 @@ input.pantryTextBox:focus{
 	max-height: 250px;
 	overflow-y: auto;
 	margin: 10px;
-  
-	overflow-wrap: break-word;
 	text-align: left;
-	/* max-height: 300px; */
 	position: relative;
 }
 
@@ -311,7 +313,7 @@ input.pantryTextBox:focus{
 }
 
 .emptyFavs {
-	color: rgb(130, 130, 130);
+	color: rgb(170, 170, 170);
 	margin-left: 0; /* Remove the left margin to center the message */
 }
 
