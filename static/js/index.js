@@ -410,8 +410,19 @@ let init = (app) => {
     } else if (mode == 2) {
       app.vue.selectedRecipe = app.vue.pinned[idx];
     }
+    // document.body.classList.add('noScroll');
     // console.log(app.vue.selectedRecipe);
   }
+
+  app.updateScrolling = function() {
+    if (app.vue.recipePopup) {
+      document.body.style.overflow = 'hidden';
+      console.log("here?");
+    } else {
+      document.body.style.overflow = 'auto';
+      console.log("here2?");
+    }
+  };
 
   // This contains all the methods.
   app.methods = {
@@ -441,6 +452,7 @@ let init = (app) => {
     setPinnedImageURL: app.setPinnedImageURL,
     deletePinnedImageURL: app.deletePinnedImageURL,
     selectRecipePopup: app.selectRecipePopup,
+    updateScrolling: app.updateScrolling,
   };
 
   // This creates the Vue instance.
@@ -460,6 +472,7 @@ let init = (app) => {
     app.getRecipes();
     app.getFavs();
     app.getPinned();
+    app.vue.$watch('recipePopup', app.vue.updateScrolling);
   };
 
   // Call to the initializer.
